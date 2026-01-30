@@ -1,0 +1,5 @@
+// PINS TO USE
+#define ENCODER_MOSI PB5
+#define ENCODER_MISO PB4
+#define ENCODER_SCK PB3
+#define ENCODER_CS PA15

@@ -61,7 +61,7 @@
 // @section info
 
 // Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "(MarlinFirmware)" // Original author or contributor.
+#define STRING_CONFIG_H_AUTHOR "(Kevin Guo Feb 2 2026)" // Original author or contributor.
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 // @section machine
@@ -128,7 +128,7 @@
 //#define BLUETOOTH
 
 // Name displayed in the LCD "Ready" message and Info menu
-//#define CUSTOM_MACHINE_NAME "3D Printer"
+#define CUSTOM_MACHINE_NAME "Ferrofluid"
 //#define CONFIGURABLE_MACHINE_NAME // Add G-code M550 to set/report the machine name
 
 // Printer's unique ID, used by some programs to differentiate between machines.
@@ -215,6 +215,18 @@
 #ifdef W_DRIVER_TYPE
   #define AXIS9_NAME 'W' // :['W']
   //#define AXIS9_ROTATES
+#endif
+
+// @section encoder
+
+//#define SPI_ENCODER
+
+// USE THIS AS REFERENCE https://github.com/MarlinFirmware/Marlin/commit/446685f65876958251245ed26d1af7895b5c68ed#diff-9c4727e39e2dbb22122d19dea2395f2fb3e3f8a6dff02703ca6a122160f91548
+#ifdef SPI_ENCODER_ENABLED
+  #define SPI_ENCODER_MISO  ENCODER_MOSI
+  #define SPI_ENCODER_MOSI  ENCODER_MISO
+  #define SPI_ENCODER_SCK   ENCODER_SCK
+  #define SPI_ENCODER_CS    ENCODER_CS
 #endif
 
 // @section extruder
@@ -1870,7 +1882,7 @@
 // @section stepper drivers
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define INVERT_X_DIR false
+#define INVERT_X_DIR true
 #define INVERT_Y_DIR true
 #define INVERT_Z_DIR false
 //#define INVERT_I_DIR false

@@ -264,6 +264,10 @@
   #include "feature/e_parser.h"
 #endif
 
+#ifdef SPI_ENCODER
+  #include "module/spi_encoder/spi_encoder.h"
+#endif
+
 /**
  * Spin in place here while keeping temperature processing alive
  */
@@ -1730,6 +1734,10 @@ void setup() {
   SETUP_LOG("setup() completed.");
 
   TERN_(MARLIN_TEST_BUILD, runStartupTests());
+
+  #ifdef SPI_ENCODER
+    //SPI_Encoder encoder = SPI_Encoder();
+  #endif
 } // setup()
 
 /**

@@ -1734,7 +1734,7 @@ void setup() {
   TERN_(MARLIN_TEST_BUILD, runStartupTests());
 
   // DEFINE SPI ENCODER
-  //SPI_Encoder encoder = SPI_Encoder();
+  SPI_Encoder encoder = SPI_Encoder();
   
 } // setup()
 

@@ -317,6 +317,9 @@
 
 #endif
 
+#define DIAG_JUMPERS_REMOVED
+#define NO_USER_FEEDBACK_WARNING
+
 /**
  * Differential Extruder
  *

@@ -53,7 +53,7 @@ namespace AS5047P_ComBackend
          * @param mosi The pin number of the MOSI (Master Out Slave In) pin
          * @param sclk The pin number of the SCLK (Clock) pin
          */
-        void init(uint8_t miso, uint8_t mosi, uint8_t sclk)
+        void init(uint8_t miso, uint8_t mosi, uint8_t sclk);
 
         /**
          * Write data to register of the AS5047P sensor.

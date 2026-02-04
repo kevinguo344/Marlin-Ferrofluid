@@ -4,14 +4,9 @@
 
 // pins are defined here: https://teamgloomy.github.io/btt_octopus_1.1_f429_pins_3_5.html
 
-// HAS_SPI_TFT uses similar SPI pin, check xpt2046.cpp and xpt2046.h for using SPI
-
-
 SPI_Encoder::SPI_Encoder(){
-	//SPIClass(ENCODER_MOSI, ENCODER_MISO, ENCODER_SCK)
-	
 	chip = AS5047P(ENCODER_CS);
-	chip.initSPI();
+	chip.initSPI(ENCODER_MISO, ENCODER_MOSI, ENCODER_SCK);
 }
 
 float SPI_Encoder::getAngle(){

@@ -205,6 +205,16 @@ bool AS5047P::initSPI()
     return checkSPICon();
 }
 
+/**
+ * @brief Initialize the SPI backend and verify connectivity.
+ * @return true if initialization and connectivity check succeed; false otherwise.
+ */
+bool AS5047P::initSPI(uint8_t miso, uint8_t mosi, uint8_t sclk)
+{
+    __spiInterface.init(miso, mosi, sclk);
+    return checkSPICon();
+}
+
 // ======================================================================
 // Utilities (error collection & verification helpers)
 // ======================================================================

@@ -152,6 +152,10 @@
   #include "feature/encoder_i2c.h"
 #endif
 
+#if ENABLED(SPI_POSITION_ENCODERS)
+  #include "feature/spi_encoder.h"
+#endif
+
 #if HAS_TRINAMIC_CONFIG
   #include "module/stepper/trinamic.h"
 #endif
@@ -263,8 +267,6 @@
 #if ENABLED(SOFT_FEED_HOLD)
   #include "feature/e_parser.h"
 #endif
-
-#include "module/spi_encoder/spi_encoder.h"
 
 /**
  * Spin in place here while keeping temperature processing alive
@@ -873,6 +875,13 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
         i2cpem_next_update_ms = ms + I2CPE_MIN_UPD_TIME_MS;
       }
     }
+  }
+  #endif
+
+  // Run SPI Position Encoders
+  #if ENABLED(SPI_POSITION_ENCODERS)
+  {
+    //include some code to send SPI Encoder position data at a regular interval
   }
   #endif
 
@@ -1594,6 +1603,11 @@ void setup() {
     SETUP_RUN(I2CPEM.init());
   #endif
 
+  #if ENABLED(SPI_POSITION_ENCODERS)
+    //SETUP_RUN(SPI_Encoder_Manager.init());
+    SPI_Encoder_Manager.init();
+  #endif
+
   #if ENABLED(EXPERIMENTAL_I2CBUS) && I2C_SLAVE_ADDRESS > 0
     SETUP_LOG("i2c...");
     i2c.onReceive(i2c_on_receive);
@@ -1732,9 +1746,6 @@ void setup() {
   SETUP_LOG("setup() completed.");
 
   TERN_(MARLIN_TEST_BUILD, runStartupTests());
-
-  // DEFINE SPI ENCODER
-  SPI_Encoder encoder = SPI_Encoder();
   
 } // setup()
 

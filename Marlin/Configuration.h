@@ -217,18 +217,6 @@
   //#define AXIS9_ROTATES
 #endif
 
-// @section encoder
-
-#define SPI_ENCODER
-
-// USE THIS AS REFERENCE https://github.com/MarlinFirmware/Marlin/commit/446685f65876958251245ed26d1af7895b5c68ed#diff-9c4727e39e2dbb22122d19dea2395f2fb3e3f8a6dff02703ca6a122160f91548
-#ifdef SPI_ENCODER
-  #define SPI_ENCODER_MISO  ENCODER_MOSI
-  #define SPI_ENCODER_MOSI  ENCODER_MISO
-  #define SPI_ENCODER_SCK   ENCODER_SCK
-  #define SPI_ENCODER_CS    ENCODER_CS
-#endif
-
 // @section extruder
 
 // This defines the number of extruders

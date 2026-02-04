@@ -41,6 +41,14 @@ namespace AS5047P_ComBackend
                 // Initialize the SPI peripheral (idempotent on Arduino).
                 SPI.begin();
         }
+        
+        void AS5047P_SPI::init(uint8_t miso, uint8_t mosi, uint8_t sclk)
+        {
+                SPI.setMISO(miso);
+                SPI.setMOSI(mosi);
+                SPI.setSCLK(sclk);
+                SPI.begin();
+        }
 
         void AS5047P_SPI::write(const uint16_t regAddress, const uint16_t data)
         {

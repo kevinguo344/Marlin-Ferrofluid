@@ -47,6 +47,15 @@ namespace AS5047P_ComBackend
         void init();
 
         /**
+         * CUSTOM CODE
+         * Initializes the SPI interface with new MISO, MOSI, and SCK pins
+         * @param miso The pin number of the MISO (Master In Slave Out) pin
+         * @param mosi The pin number of the MOSI (Master Out Slave In) pin
+         * @param sclk The pin number of the SCLK (Clock) pin
+         */
+        void init(uint8_t miso, uint8_t mosi, uint8_t sclk)
+
+        /**
          * Write data to register of the AS5047P sensor.
          * @param regAddress The address of the register where the data should be written.
          * @param data The data to wirte.

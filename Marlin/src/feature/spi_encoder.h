@@ -13,16 +13,19 @@ class SPI_Encoder {
 		AS5047P *chip;
 
 	public:
+		SPI_Encoder();
 		SPI_Encoder(uint8_t chipSelectPinNo);
+		void setChipSelect(uint8_t chipSelectPinNo);
 		void init();
 		float getAngle();
 		uint16_t getMagnitude();
 };
 
-//class SPI_Encoder_Mgr {
-//	public:
-//		static void init();
-//		static SPI_Encoder encoders[2];
-//};
+class SPI_Encoder_Mgr {
+	public:
+		static SPI_Encoder encoders[1];
+		static void init();
+		static void reportPosition();
+};
 
-//extern SPI_Encoder_Mgr SPI_Encoder_Manager;
+extern SPI_Encoder_Mgr SPI_Encoder_Manager;

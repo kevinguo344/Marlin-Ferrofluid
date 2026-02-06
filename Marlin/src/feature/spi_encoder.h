@@ -6,12 +6,11 @@
 #define ENCODER_MOSI PB5
 #define ENCODER_MISO PB4
 #define ENCODER_SCK PB3
-#define ENCODER_CS PA15
+#define ENCODER_CS PA_15
 
 class SPI_Encoder {
 	private:
-		//AS5047P *chip;
-		AS5047P chip;
+		AS5047P *chip;
 
 	public:
 		SPI_Encoder(uint8_t chipSelectPinNo = ENCODER_CS);

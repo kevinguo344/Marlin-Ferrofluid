@@ -18,7 +18,7 @@
  */
 
 #include <Arduino.h>
-#include "types/AS5047P_Types.h"
+#include "../types/AS5047P_Types.h"
 
 namespace AS5047P_ComBackend
 {

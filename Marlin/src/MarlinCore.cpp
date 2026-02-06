@@ -1604,9 +1604,8 @@ void setup() {
   #endif
 
   #if ENABLED(SPI_POSITION_ENCODERS)
-    //SETUP_RUN(SPI_Encoder_Manager.init());
-    //SPI_Encoder_Manager.init();
-    SPI_Encoder encoder = SPI_Encoder(SPI_ENCODER_CS);
+    SPI_Encoder encoder = SPI_Encoder();
+    encoder.init();
   #endif
 
   #if ENABLED(EXPERIMENTAL_I2CBUS) && I2C_SLAVE_ADDRESS > 0

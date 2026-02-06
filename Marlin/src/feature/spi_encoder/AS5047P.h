@@ -19,18 +19,18 @@
 
 #include <inttypes.h>
 
-#include "./util/AS5047P_Settings.h"
+#include "AS5047P_Settings.h"
 
 // #ifdef Arduino_h
 #include <Arduino.h>
-#include "spi/AS5047P_SPI_Arduino.h"
+#include "AS5047P_SPI_Arduino.h"
 // #endif
 
 #if defined(AS5047P_STD_STRING_SUPPORT)
 #include <string>
 #endif
 
-#include "types/AS5047P_Types.h"
+#include "AS5047P_Types.h"
 
 #define AS5047P_INFO_STRING_BUFFER_SIZE 350 ///< Buffer size for formatted status text.
 

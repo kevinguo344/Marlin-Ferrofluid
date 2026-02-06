@@ -16,7 +16,7 @@
 
 #include <inttypes.h>
 
-#include "../util/AS5047P_Settings.h"
+#include "AS5047P_Settings.h"
 
 #if defined(AS5047P_STD_STRING_SUPPORT)
 #include <string>

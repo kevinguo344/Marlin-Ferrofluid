@@ -1604,7 +1604,7 @@ void setup() {
   #endif
 
   #if ENABLED(SPI_POSITION_ENCODERS)
-    SPI_Encoder encoder = SPI_Encoder();
+    SPI_Encoder encoder = SPI_Encoder(ENCODER_CS);
     encoder.init();
   #endif
 

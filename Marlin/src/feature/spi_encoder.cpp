@@ -14,7 +14,7 @@
 // ======================================================================
 
 SPI_Encoder::SPI_Encoder(uint8_t chipSelectPinNo){
-    chip = new AS5047P(chipSelectPinNo, 100000);
+    chip = new AS5047P(chipSelectPinNo, 100000UL);
 }
 
 // ======================================================================

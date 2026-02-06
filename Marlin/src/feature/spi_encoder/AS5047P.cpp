@@ -15,7 +15,7 @@
  */
 
 #include "AS5047P.h"
-#include "util/AS5047P_Util.h"
+#include "AS5047P_Util.h"
 
 // ======================================================================
 // Constructors

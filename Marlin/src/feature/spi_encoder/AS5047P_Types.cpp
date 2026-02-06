@@ -13,7 +13,7 @@
  */
 
 #include "AS5047P_Types.h"
-#include "util/AS5047P_Util.h"
+#include "AS5047P_Util.h"
 
 namespace AS5047P_Types
 {

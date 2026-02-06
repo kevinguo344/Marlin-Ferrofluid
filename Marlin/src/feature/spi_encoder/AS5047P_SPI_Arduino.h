@@ -17,7 +17,7 @@
 #include <inttypes.h>
 #include <SPI.h>
 
-#include "../util/AS5047P_Settings.h"
+#include "AS5047P_Settings.h"
 
 /**
  * @namespace AS5047P_ComBackend

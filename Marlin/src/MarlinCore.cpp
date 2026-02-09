@@ -882,14 +882,14 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
   #if ENABLED(SPI_POSITION_ENCODERS)
   {
     //include some code to send SPI Encoder position data at a regular interval
-    static millis_t spi_en_next_update_ms;
-    if(planner.has_blocks_queued()){
-      const millis_t ms = millis();
-      if(ELAPSED(ms, spi_en_next_update_ms)) {
-        SPI_Encoder_Manager.reportPosition();
-        spi_en_next_update_ms = ms + 1000;
-      }
-    }
+    //static millis_t spi_en_next_update_ms;
+    //if(planner.has_blocks_queued()){
+    //  const millis_t ms = millis();
+    //  if(ELAPSED(ms, spi_en_next_update_ms)) {
+    //    SPI_Encoder_Manager.reportPosition();
+    //    spi_en_next_update_ms = ms + 200;
+    //  }
+    //}
   }
   #endif
 

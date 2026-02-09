@@ -44,7 +44,7 @@ namespace AS5047P_ComBackend
         /**
          * Initializes the spi interface.
          */
-        void init();
+        void init(SPIClass* spi);
 
         /**
          * CUSTOM CODE
@@ -72,6 +72,7 @@ namespace AS5047P_ComBackend
     private:
         uint8_t __chipSelectPinNo; ///< The pin number of the chip select pin.
         SPISettings __spiSettings; ///< The spi bus settings.
+        SPIClass* spi;
 
 #if defined(F_CPU) && defined(AS5047P_SPI_ARDUINO_USE_100NS_NOP_DELAY)
 

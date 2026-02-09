@@ -29,8 +29,9 @@ void SPI_Encoder::setChipSelect(uint8_t chipSelectPinNo){
 // Init
 // ======================================================================
 
-void SPI_Encoder::init(){
-	chip->initSPI(ENCODER_MISO, ENCODER_MOSI, ENCODER_SCK);
+bool SPI_Encoder::init(){
+	SPIClass spi3(ENCODER_MOSI, ENCODER_MISO, ENCODER_SCK);
+	return chip->initSPI(&spi3);
 }
 
 float SPI_Encoder::getAngle(){
@@ -42,14 +43,33 @@ uint16_t SPI_Encoder::getMagnitude(){
 }
 
 SPI_Encoder SPI_Encoder_Mgr::encoders[1];
+bool SPI_Encoder_Mgr::initiated = false;
 
 void SPI_Encoder_Mgr::init(){
 	encoders[0].setChipSelect(ENCODER_CS);
-	encoders[0].init();
+	if (encoders[0].init()){
+		initiated = true;
+		SERIAL_ECHOLN(F("ENCODERS INITIALIZED CORRECTLY"));
+	} else {
+		initiated = false;
+		SERIAL_ECHOLN(F("ENCODERS FAILED INIT"));
+	}
 }
 
 void SPI_Encoder_Mgr::reportPosition(){
-	SERIAL_ECHO(F("Current Encoder Magnitude: "), encoders[0].getMagnitude(), F("\n"));
+	if(initiated){
+		SERIAL_ECHO(F("Current Encoder Magnitude: "), encoders[0].getAngle(), F("\n"));
+	} else {
+		SERIAL_ECHOLN(F("ENCODERS FAILED INIT"));
+		encoders[0].init();
+		if(initiated){
+			SERIAL_ECHOLN(F("ENCODERS INITIALIZED CORRECTLY"));
+			SERIAL_ECHO(F("Current Encoder Magnitude: "), encoders[0].getAngle(), F("\n"));
+		} else {
+			SERIAL_ECHOLN(F("ENCODERS FAILED INIT"));
+		}
+	}
+	
 }
 
 #endif // SPI_POSITION_ENCODERS

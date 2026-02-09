@@ -14,6 +14,7 @@
  * This project is released under the GPL-3.0 License.
  */
 
+#include "../../inc/MarlinConfig.h"
 #include "AS5047P.h"
 #include "AS5047P_Util.h"
 
@@ -40,7 +41,7 @@ AS5047P::AS5047P(const uint8_t chipSelectPinNo, const uint32_t spiSpeed)
 bool AS5047P::checkSPICon()
 {
 #ifdef AS5047P_DEBUG_OUTPUT_ENABLE
-    Serial.println(F("=== AS5047P SPI Connection Test (compact + safe restore) ==="));
+    SERIAL_ECHO(F("=== AS5047P SPI Connection Test (compact + safe restore) ==="));
 #endif
 
     AS5047P_Types::ERROR_t err;
@@ -50,15 +51,15 @@ bool AS5047P::checkSPICon()
     if (err.controllerSideErrors.flags.CONT_SPI_PARITY_ERROR)
     {
 #ifdef AS5047P_DEBUG_OUTPUT_ENABLE
-        Serial.println(F("[FAIL] Parity error on ERRFL read."));
+        SERIAL_ECHO(F("[FAIL] Parity error on ERRFL read."));
 #endif
         return false;
     }
     if (errfl.data.raw)
     {
 #ifdef AS5047P_DEBUG_OUTPUT_ENABLE
-        Serial.print(F("[FAIL] ERRFL nonzero: 0b"));
-        Serial.println(errfl.data.raw, BIN);
+        SERIAL_ECHO(F("[FAIL] ERRFL nonzero: 0b"));
+        SERIAL_ECHOLN(errfl.data.raw, BIN);
 #endif
         return false;
     }
@@ -68,7 +69,7 @@ bool AS5047P::checkSPICon()
     if (err.controllerSideErrors.flags.CONT_SPI_PARITY_ERROR)
     {
 #ifdef AS5047P_DEBUG_OUTPUT_ENABLE
-        Serial.println(F("[FAIL] Parity error on ANGLEUNC read."));
+        SERIAL_ECHO(F("[FAIL] Parity error on ANGLEUNC read."));
 #endif
         return false;
     }
@@ -76,7 +77,7 @@ bool AS5047P::checkSPICon()
     if (ang > 0x3FFF)
     {
 #ifdef AS5047P_DEBUG_OUTPUT_ENABLE
-        Serial.println(F("[FAIL] ANGLE out of range (>16383)."));
+        SERIAL_ECHO(F("[FAIL] ANGLE out of range (>16383)."));
 #endif
         return false;
     }
@@ -89,7 +90,7 @@ bool AS5047P::checkSPICon()
     if (e_before.controllerSideErrors.flags.CONT_SPI_PARITY_ERROR)
     {
 #ifdef AS5047P_DEBUG_OUTPUT_ENABLE
-        Serial.println(F("[FAIL] Parity error on SETTINGS2 read (before)."));
+        SERIAL_ECHO(F("[FAIL] Parity error on SETTINGS2 read (before)."));
 #endif
         return false;
     }
@@ -111,9 +112,9 @@ bool AS5047P::checkSPICon()
 #ifdef AS5047P_DEBUG_OUTPUT_ENABLE
         if (!ok || e_restore.controllerSideErrors.flags.CONT_SPI_PARITY_ERROR)
         {
-            Serial.print(F("[WARN] Restore SETTINGS2 failed during "));
-            Serial.print(ctx_label);
-            Serial.println(F("."));
+            SERIAL_ECHO(F("[WARN] Restore SETTINGS2 failed during "));
+            SERIAL_ECHO(ctx_label);
+            SERIAL_ECHO(F("."));
         }
 #endif
         return ok && !e_restore.controllerSideErrors.flags.CONT_SPI_PARITY_ERROR;
@@ -124,7 +125,7 @@ bool AS5047P::checkSPICon()
     if (!AS5047P::write_SETTINGS2(&s2_w, &e_wr, /*checkForComError=*/true, /*verifyWrittenReg=*/false) || e_wr.controllerSideErrors.flags.CONT_SPI_PARITY_ERROR)
     {
 #ifdef AS5047P_DEBUG_OUTPUT_ENABLE
-        Serial.println(F("[FAIL] SETTINGS2 write failed or parity error."));
+        SERIAL_ECHO(F("[FAIL] SETTINGS2 write failed or parity error."));
 #endif
         // nothing changed on chip if write failed, so just return
         return false;
@@ -138,7 +139,7 @@ bool AS5047P::checkSPICon()
     {
         restore_s2(F("post-write read"));
 #ifdef AS5047P_DEBUG_OUTPUT_ENABLE
-        Serial.println(F("[FAIL] Parity error on SETTINGS2 read (after)."));
+        SERIAL_ECHO(F("[FAIL] Parity error on SETTINGS2 read (after)."));
 #endif
         return false;
     }
@@ -149,10 +150,10 @@ bool AS5047P::checkSPICon()
     {
         restore_s2(F("verification"));
 #ifdef AS5047P_DEBUG_OUTPUT_ENABLE
-        Serial.print(F("[FAIL] SETTINGS2 mismatch (masked). wrote=0x"));
-        Serial.print(wrote_m, HEX);
-        Serial.print(F(" read=0x"));
-        Serial.println(read_m, HEX);
+        SERIAL_ECHO(F("[FAIL] SETTINGS2 mismatch (masked). wrote=0x"));
+        SERIAL_ECHO(wrote_m, HEX);
+        SERIAL_ECHO(F(" read=0x"));
+        SERIAL_ECHO(read_m, HEX);
 #endif
         return false;
     }
@@ -161,7 +162,7 @@ bool AS5047P::checkSPICon()
     if (!restore_s2(F("restore")))
     {
 #ifdef AS5047P_DEBUG_OUTPUT_ENABLE
-        Serial.println(F("[FAIL] SETTINGS2 restore failed."));
+        SERIAL_ECHO(F("[FAIL] SETTINGS2 restore failed."));
 #endif
         return false;
     }
@@ -176,20 +177,20 @@ bool AS5047P::checkSPICon()
         uint16_t now_m = s2_restored.data.raw & S2_WRITABLE_MASK;
         if (before_m != now_m)
         {
-            Serial.print(F("[FAIL] SETTINGS2 did not restore on writable bits. got=0x"));
-            Serial.print(now_m, HEX);
-            Serial.print(F(" expected=0x"));
-            Serial.println(before_m, HEX);
+            SERIAL_ECHO(F("[FAIL] SETTINGS2 did not restore on writable bits. got=0x"));
+            SERIAL_ECHO(now_m, HEX);
+            SERIAL_ECHO(F(" expected=0x"));
+            SERIAL_ECHO(before_m, HEX);
             return false;
         }
     }
     else
     {
-        Serial.println(F("[FAIL] Parity error while verifying SETTINGS2 restore."));
+        SERIAL_ECHO(F("[FAIL] Parity error while verifying SETTINGS2 restore."));
         return false;
     }
 
-    Serial.println(F("[PASS] SPI OK (ERRFL, ANGLE, SETTINGS2 masked write + guaranteed restore)."));
+    SERIAL_ECHO(F("[PASS] SPI OK (ERRFL, ANGLE, SETTINGS2 masked write + guaranteed restore)."));
 #endif
 
     return true;
@@ -199,19 +200,25 @@ bool AS5047P::checkSPICon()
  * @brief Initialize the SPI backend and verify connectivity.
  * @return true if initialization and connectivity check succeed; false otherwise.
  */
-bool AS5047P::initSPI()
-{
-    __spiInterface.init();
-    return checkSPICon();
-}
+//bool AS5047P::initSPI()
+//{
+//    __spiInterface.init();
+//    return checkSPICon();
+//}
 
 /**
  * @brief Initialize the SPI backend and verify connectivity.
  * @return true if initialization and connectivity check succeed; false otherwise.
  */
-bool AS5047P::initSPI(uint8_t miso, uint8_t mosi, uint8_t sclk)
+//bool AS5047P::initSPI(uint8_t miso, uint8_t mosi, uint8_t sclk)
+//{
+//    __spiInterface.init(miso, mosi, sclk);
+//    return checkSPICon();
+//}
+
+bool AS5047P::initSPI(SPIClass* _spi)
 {
-    __spiInterface.init(miso, mosi, sclk);
+    __spiInterface.init(_spi);
     return checkSPICon();
 }
 

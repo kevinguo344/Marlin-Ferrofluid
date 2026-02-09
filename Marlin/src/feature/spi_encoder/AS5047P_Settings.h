@@ -41,7 +41,7 @@
  * Note: This is typically **not** supported by the classic Arduino IDE and may
  * fail to compile there. Use an alternative toolchain such as PlatformIO + VS Code.
  */
-// #define AS5047P_STD_STRING_SUPPORT
+#define AS5047P_STD_STRING_SUPPORT
 
 /**
  * @brief ENABLE debug output via Serial.print*().
@@ -49,6 +49,6 @@
  * This is only intended for library development and debugging.
  * It may significantly increase code size and slow down execution.
  */
-// #define AS5047P_DEBUG_OUTPUT_ENABLE
+#define AS5047P_DEBUG_OUTPUT_ENABLE
 
 #endif // AS5047P_Settings_h

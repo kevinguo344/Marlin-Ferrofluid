@@ -68,7 +68,7 @@ public:
      *        Call this once before using the sensor object.
      * @return true if initialization and connectivity check succeed; false otherwise.
      */
-    bool initSPI();
+    //bool initSPI();
 
     /**
      * CUSTOM CODE
@@ -78,7 +78,8 @@ public:
      * @param mosi The pin number of the MOSI (Master Out Slave In) pin
      * @param sclk The pin number of the SCLK (Clock) pin
      */
-    bool initSPI(uint8_t miso, uint8_t mosi, uint8_t sclk);
+    //bool initSPI(uint8_t miso, uint8_t mosi, uint8_t sclk);
+    bool initSPI(SPIClass* _spi);
 
     // ======================================================================
     // Utilities

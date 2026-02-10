@@ -29,4 +29,4 @@ uint16_t encoder_read_errfl();
  * Periodic encoder update
  * Safe to call from loop() or idle()
  */
-uint16_t encoder_update();
+float encoder_update();

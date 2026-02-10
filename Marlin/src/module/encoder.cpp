@@ -76,8 +76,10 @@ uint16_t encoder_read_errfl() {
 // Periodic update
 // -----------------------------
 
-uint16_t encoder_update() {
-	return encoder_read_raw();
+float encoder_update() {
+	uint16_t raw = encoder_read_raw();
+	float angle = (raw/(float)16384) * 360;
+	return angle;
 	//static millis_t last = 0;
 	//if (!ELAPSED(millis(), last + 5)) return; // 200 Hz
 	//last = millis();

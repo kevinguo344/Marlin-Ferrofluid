@@ -886,10 +886,11 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
     if(planner.has_blocks_queued()){
       const millis_t ms = millis();
       if(ELAPSED(ms, spi_en_next_update_ms)) {
-        uint16_t raw = encoder_update();
-        if(raw > 0){
-          SERIAL_ECHOLN(F("Current Encoder Magnitude: "), raw);
+        float theta = encoder_update();
+        if(theta > 0){
+          SERIAL_ECHOLN(F("Current Encoder Angle: "), theta);
         }
+        spi_en_next_update_ms = ms + 1000;
       }
     }
   }
@@ -936,10 +937,11 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
   static millis_t spi_en_next_update_ms;
   const millis_t ms = millis();
   if(ELAPSED(ms, spi_en_next_update_ms)) {
-    uint16_t raw = encoder_update();
-    if(raw > 0){
-      SERIAL_ECHOLN(F("Current Encoder Magnitude: "), raw);
+    float theta = encoder_update();
+    if(theta > 0){
+      SERIAL_ECHOLN(F("Current Encoder Angle: "), theta);
     }
+    spi_en_next_update_ms = ms + 1000;
   }
 
   return;

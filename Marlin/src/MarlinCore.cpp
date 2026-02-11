@@ -882,17 +882,19 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
   #if ENABLED(SPI_POSITION_ENCODERS)
   {
     //include some code to send SPI Encoder position data at a regular interval
-    static millis_t spi_en_next_update_ms;
-    if(planner.has_blocks_queued()){
-      const millis_t ms = millis();
-      if(ELAPSED(ms, spi_en_next_update_ms)) {
-        float theta = encoder_update();
-        if(theta > 0){
-          SERIAL_ECHOLN(F("Current Encoder Angle: "), theta);
-        }
-        spi_en_next_update_ms = ms + 1000;
-      }
-    }
+    //static millis_t spi_en_next_update_ms;
+    //if(planner.has_blocks_queued()){
+    //  const millis_t ms = millis();
+    //  if(ELAPSED(ms, spi_en_next_update_ms)) {
+    //    //uint16_t ERRFL = SPI_Encoder_Manager.init();
+    //    //SERIAL_ECHOLN(F("ERRFL: "), ERRFL);
+    //    //float theta = encoder_update();
+    //    //if(theta > 0){
+    //    //  SERIAL_ECHOLN(F("Current Encoder Angle: "), theta);
+    //    //}
+    //    spi_en_next_update_ms = ms + 5;
+    //  }
+    //}
   }
   #endif
 
@@ -934,15 +936,17 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
   IDLE_DONE:
   TERN_(MARLIN_DEV_MODE, idle_depth--);
 
-  static millis_t spi_en_next_update_ms;
-  const millis_t ms = millis();
-  if(ELAPSED(ms, spi_en_next_update_ms)) {
-    float theta = encoder_update();
-    if(theta > 0){
-      SERIAL_ECHOLN(F("Current Encoder Angle: "), theta);
-    }
-    spi_en_next_update_ms = ms + 1000;
-  }
+  //static millis_t spi_en_next_update_ms;
+  //const millis_t ms = millis();
+  //if(ELAPSED(ms, spi_en_next_update_ms)) {
+  //  //uint16_t ERRFL = SPI_Encoder_Manager.init();
+  //  //SERIAL_ECHOLN(F("ERRFL: "), ERRFL);
+  //  //float theta = encoder_update();
+  //  //if(theta > 0){
+  //  //  SERIAL_ECHOLN(F("Current Encoder Angle: "), theta);
+  //  //}
+  //  //spi_en_next_update_ms = ms + 5;
+  //}
 
   return;
 
@@ -1626,8 +1630,8 @@ void setup() {
 
   #if ENABLED(SPI_POSITION_ENCODERS)
     //SETUP_RUN(SPI_Encoder_Manager.init());
-    //SPI_Encoder encoder = SPI_Encoder(ENCODER_CS);
-    //encoder.init();
+    //  
+  //static SPI_Encoder encoder = SPI_Encoder(PA15);
   #endif
 
   #if ENABLED(EXPERIMENTAL_I2CBUS) && I2C_SLAVE_ADDRESS > 0

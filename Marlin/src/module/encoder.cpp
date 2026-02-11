@@ -9,11 +9,11 @@
 
 SPI_Encoder_Mgr SPI_Encoder_Manager;
 
-#define AS5047P_CS_PIN PA15
-
 #define AS5047P_SPI_SPEED 1000000	// 1 MHz
 #define AS5047P_ANGLECOM	0x3FFF
 #define AS5047P_ERRFL		 0x0001
+
+// 200 steps/rotation, 1.8 deg/step, 53.33 steps/mm -> 95.994 deg/mm
 
 // defines ALPHA (smoothing factor) of Exponential Moving average
 // ALPHA = 1/(2^EMA_SHIFT)
@@ -24,7 +24,6 @@ static bool ema_initialized = false;
 
 SPI_Encoder::SPI_Encoder(uint8_t chipSelectPinNo = PA15){
 	CS_PIN = chipSelectPinNo;
-	//empty constructor, must call setChipSelect afterwards
 }
 
 uint16_t SPI_Encoder::init(){
@@ -74,10 +73,6 @@ uint16_t SPI_Encoder::transfer(uint16_t tx) {
 	return rx;
 }
 
-// -----------------------------
-// Public API
-// -----------------------------
-
 uint16_t SPI_Encoder::read_raw() {
 	// Dummy frame
 	transfer(read_cmd(AS5047P_ANGLECOM));
@@ -94,27 +89,31 @@ uint16_t SPI_Encoder::read_errfl() {
 
 uint16_t SPI_Encoder::read_smoothed(){
 	uint16_t raw = read_raw();
-
-	if(ema_initialized){
-		// y[n]: 	updated smoothed reading
-		// y[n-1]: 	previous smoothed reading
-		// x[n]:	raw sensor reading
-		// equivalent to y[n] = y[n-1] + ALPHA * (x[n] - y[n-1])
-		reading_smoothed += (raw - (reading_smoothed >> EMA_SHIFT));
-		
-		// reading_smoothed >> EMA_SHIFT equivalent to reading_smoothed/(2^EMA_SHIFT) equivalent to reading_smoothed * ALPHA
-		// & 0x3FFF clamps bitshifted reading between 0 and 16383
-		return ((reading_smoothed >> EMA_SHIFT) & 0x3FFF);
+	if(raw > 0){
+		if(ema_initialized){
+			// y[n]: 	updated smoothed reading
+			// y[n-1]: 	previous smoothed reading
+			// x[n]:	raw sensor reading
+			// equivalent to y[n] = y[n-1] + ALPHA * (x[n] - y[n-1])
+			reading_smoothed += (raw - (reading_smoothed >> EMA_SHIFT));
+			
+			// reading_smoothed >> EMA_SHIFT equivalent to reading_smoothed/(2^EMA_SHIFT) equivalent to reading_smoothed * ALPHA
+			// & 0x3FFF clamps bitshifted reading between 0 and 16383
+			return ((reading_smoothed >> EMA_SHIFT) & 0x3FFF);
+		} else {
+			reading_smoothed = raw << EMA_SHIFT;
+			ema_initialized = true;
+			return raw;
+		}
 	} else {
-		reading_smoothed = raw << EMA_SHIFT;
-		ema_initialized = true;
-		return raw;
+		return reading_smoothed;
 	}
+
 }
 
-// -----------------------------
-// Periodic update
-// -----------------------------
+uint16_t SPI_Encoder::encoder_update_raw(){
+	return read_raw();
+}
 
 float SPI_Encoder::encoder_update() {
 	uint16_t raw = read_smoothed();
@@ -122,8 +121,24 @@ float SPI_Encoder::encoder_update() {
 	return angle;
 }
 
+float SPI_Encoder::position_update(){
+	uint16_t raw = read_raw();
+}
+//
+//void SPI_Encoder::setHome(){
+//
+//}
+
 SPI_Encoder SPI_Encoder_Mgr::encoders[1] = {SPI_Encoder()};
 
-uint16_t SPI_Encoder_Mgr::init(){
-	return encoders[0].init();
+//uint16_t SPI_Encoder_Mgr::init(){
+//	return encoders[0].init();
+//}
+
+float SPI_Encoder_Mgr::getAngleReading(){
+	return encoders[0].encoder_update();
+}
+
+uint16_t SPI_Encoder_Mgr::getRawReading(){
+	return encoders[0].encoder_update_raw();
 }

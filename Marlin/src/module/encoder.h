@@ -17,7 +17,9 @@ class SPI_Encoder {
 	private:
 		int32_t reading_smoothed;
 		bool ema_initialized;
-		
+		uint16_t starting_pos;
+		uint16_t latest_pos;
+
 		uint8_t even_parity(uint16_t v);
 		uint16_t read_cmd(uint16_t addr);
 		uint16_t transfer(uint16_t tx);
@@ -38,16 +40,20 @@ class SPI_Encoder {
 	public:
 		SPI_Encoder(uint8_t chipSelectPinNo);
 		uint16_t init();
+		uint16_t encoder_update_raw();
 		float encoder_update();
+		float position_update();
 };
 
 class SPI_Encoder_Mgr {
 	public:
 		static SPI_Encoder encoders[1];
-		static uint16_t init();
-}
+		//static uint16_t init();
+		static float getAngleReading();
+		static uint16_t getRawReading();
+};
 
-//extern SPI_Encoder_Mgr SPI_Encoder_Manager;
+extern SPI_Encoder_Mgr SPI_Encoder_Manager;
 
 ///**
 // * Read raw 14-bit angle from AS5047P (ANGLECOM)

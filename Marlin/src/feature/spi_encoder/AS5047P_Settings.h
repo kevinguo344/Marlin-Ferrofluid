@@ -33,7 +33,7 @@
  * Useful when multiple libraries or devices share the SPI bus with different
  * settings. This adds a bit of overhead but can improve interoperability.
  */
-// #define AS5047P_SPI_ARDUINO_INIT_ON_COM_ENAB
+#define AS5047P_SPI_ARDUINO_INIT_ON_COM_ENAB
 
 /**
  * @brief Enable std::string-based text output helpers.

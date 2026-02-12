@@ -153,7 +153,7 @@
 #endif
 
 #if ENABLED(SPI_POSITION_ENCODERS)
-  #include "module/encoder.h"
+  #include "feature/spi_encoder.h"
 #endif
 
 #if HAS_TRINAMIC_CONFIG
@@ -887,11 +887,12 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
       const millis_t ms = millis();
       if(ELAPSED(ms, spi_en_next_update_ms)) {
         //SERIAL_ECHOLN(F("Current Encoder Angle: "), SPI_Encoder_Manager.getRawReading());
-        float theta = SPI_Encoder_Manager.getAngleReading();
-        if(theta > 0){
-          SERIAL_ECHOLN(F("Current Encoder Angle: "), theta);
-        }
-        spi_en_next_update_ms = ms + 20;
+        SPI_Encoder_Manager.reportPosition();
+        //float theta = SPI_Encoder_Manager.reportPosition();
+        //if(theta > 0){
+        //  SERIAL_ECHOLN(F("Current Encoder Angle: "), theta);
+        //}
+        spi_en_next_update_ms = ms + 500;
       }
     }
   }
@@ -938,14 +939,15 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
   static millis_t spi_en_next_update_ms;
   const millis_t ms = millis();
   if(ELAPSED(ms, spi_en_next_update_ms)) {
+    SPI_Encoder_Manager.reportPosition();
     //uint16_t ERRFL = SPI_Encoder_Manager.init();
     //SERIAL_ECHOLN(F("ERRFL: "), ERRFL);
     //SERIAL_ECHOLN(F("Current Encoder Angle: "), SPI_Encoder_Manager.getRawReading());
-    float theta = SPI_Encoder_Manager.getAngleReading();
-    if(theta > 0){
-      SERIAL_ECHOLN(F("Current Encoder Angle: "), theta);
-    }
-    spi_en_next_update_ms = ms + 20;
+    //float theta = SPI_Encoder_Manager.getAngleReading();
+    //if(theta > 0){
+    //  SERIAL_ECHOLN(F("Current Encoder Angle: "), theta);
+    //}
+    spi_en_next_update_ms = ms + 500;
   }
 
   return;

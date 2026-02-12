@@ -13,9 +13,9 @@ class SPI_Encoder {
 		AS5047P *chip;
 
 	public:
-		SPI_Encoder();
+		//SPI_Encoder();
 		SPI_Encoder(uint8_t chipSelectPinNo);
-		void setChipSelect(uint8_t chipSelectPinNo);
+		//void setChipSelect(uint8_t chipSelectPinNo);
 		bool init();
 		float getAngle();
 		uint16_t getMagnitude();

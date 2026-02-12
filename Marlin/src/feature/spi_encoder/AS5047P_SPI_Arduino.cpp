@@ -36,9 +36,9 @@ namespace AS5047P_ComBackend
                 digitalWrite(__chipSelectPinNo, HIGH);
         }
 
-        void AS5047P_SPI::init(SPIClass* _spi)
-        {       spi = _spi;
-                spi->begin();
+        void AS5047P_SPI::init()
+        {       //spi = _spi;
+                //spi->begin();
                 // Initialize the SPI peripheral (idempotent on Arduino).
                 //SPI.begin();
         }
@@ -58,15 +58,15 @@ namespace AS5047P_ComBackend
         {
                 // Optionally (re-)initialize SPI for each transaction if enabled via macro.
 #ifdef AS5047P_SPI_ARDUINO_INIT_ON_COM_ENAB
-                spi->begin();
+                SPI.begin();
                 //SPI.begin();
 #endif
-                spi->beginTransaction(__spiSettings);
+                SPI.beginTransaction(__spiSettings);
 
                 // -------- Send WRITE command frame (register address) --------
                 digitalWrite(__chipSelectPinNo, LOW);
                 AS5047P_Types::SPI_Command_Frame_t cmdFrame(regAddress, AS5047P_TYPES_WRITE_CMD);
-                spi->transfer16(cmdFrame.data.raw);
+                SPI.transfer16(cmdFrame.data.raw);
                 digitalWrite(__chipSelectPinNo, HIGH);
 
                 // Inter-frame gap: either precise ~100 ns NOPs or a conservative 1 µs delay.
@@ -79,7 +79,7 @@ namespace AS5047P_ComBackend
                 // -------- Send WRITE data frame --------
                 digitalWrite(__chipSelectPinNo, LOW);
                 AS5047P_Types::SPI_WriteData_Frame_t writeFrame(data, AS5047P_TYPES_ALWAYS_LOW);
-                spi->transfer16(writeFrame.data.raw);
+                SPI.transfer16(writeFrame.data.raw);
                 digitalWrite(__chipSelectPinNo, HIGH);
 
                 // Inter-frame gap again to respect device timing.
@@ -90,9 +90,9 @@ namespace AS5047P_ComBackend
 #endif
 
                 // Close the SPI transaction (and SPI itself if macro requests it).
-                spi->endTransaction();
+                SPI.endTransaction();
 #ifdef AS5047P_SPI_ARDUINO_INIT_ON_COM_ENAB
-                spi->end();
+                SPI.end();
 #endif
         }
 
@@ -102,14 +102,14 @@ namespace AS5047P_ComBackend
 
                 // Optionally (re-)initialize SPI for each transaction if enabled via macro.
 #ifdef AS5047P_SPI_ARDUINO_INIT_ON_COM_ENAB
-                spi->begin();
+                SPI.begin();
 #endif
-                spi->beginTransaction(__spiSettings);
+                SPI.beginTransaction(__spiSettings);
 
                 // -------- Send READ command frame (register address) --------
                 digitalWrite(__chipSelectPinNo, LOW);
                 AS5047P_Types::SPI_Command_Frame_t cmdFrame(regAddress, AS5047P_TYPES_READ_CMD);
-                spi->transfer16(cmdFrame.data.raw);
+                SPI.transfer16(cmdFrame.data.raw);
                 digitalWrite(__chipSelectPinNo, HIGH);
 
                 // Inter-frame gap before issuing the NOP (readback) frame.
@@ -134,9 +134,9 @@ namespace AS5047P_ComBackend
 #endif
 
                 // Close the SPI transaction (and SPI itself if macro requests it).
-                spi->endTransaction();
+                SPI.endTransaction();
 #ifdef AS5047P_SPI_ARDUINO_INIT_ON_COM_ENAB
-                spi->end();
+                SPI.end();
 #endif
 
                 return receivedData;

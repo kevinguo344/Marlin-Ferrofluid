@@ -13,25 +13,25 @@ SPI_Encoder_Mgr SPI_Encoder_Manager;
 // Constructors
 // ======================================================================
 
-SPI_Encoder::SPI_Encoder(){
-	//empty constructor, must call setChipSelect afterwards
-}
+//SPI_Encoder::SPI_Encoder(){
+//	//empty constructor, must call setChipSelect afterwards
+//}
 
 SPI_Encoder::SPI_Encoder(uint8_t chipSelectPinNo){
     chip = new AS5047P(chipSelectPinNo, 100000UL);
 }
 
-void SPI_Encoder::setChipSelect(uint8_t chipSelectPinNo){
-	chip = new AS5047P(chipSelectPinNo, 100000UL);
-}
+//void SPI_Encoder::setChipSelect(uint8_t chipSelectPinNo){
+//	chip = AS5047P(chipSelectPinNo, 100000UL);
+//}
 
 // ======================================================================
 // Init
 // ======================================================================
 
 bool SPI_Encoder::init(){
-	SPIClass spi3(ENCODER_MOSI, ENCODER_MISO, ENCODER_SCK);
-	return chip->initSPI(&spi3);
+	//SPIClass spi3(ENCODER_MOSI, ENCODER_MISO, ENCODER_SCK);
+	return chip->initSPI();
 }
 
 float SPI_Encoder::getAngle(){
@@ -42,11 +42,11 @@ uint16_t SPI_Encoder::getMagnitude(){
 	return chip->readMagnitude();
 }
 
-SPI_Encoder SPI_Encoder_Mgr::encoders[1];
+SPI_Encoder SPI_Encoder_Mgr::encoders[1] = {SPI_Encoder(PA15)};
 bool SPI_Encoder_Mgr::initiated = false;
 
 void SPI_Encoder_Mgr::init(){
-	encoders[0].setChipSelect(ENCODER_CS);
+	//encoders[0].setChipSelect(ENCODER_CS);
 	if (encoders[0].init()){
 		initiated = true;
 		SERIAL_ECHOLN(F("ENCODERS INITIALIZED CORRECTLY"));

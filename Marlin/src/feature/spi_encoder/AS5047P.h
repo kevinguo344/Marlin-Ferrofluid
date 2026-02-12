@@ -68,7 +68,7 @@ public:
      *        Call this once before using the sensor object.
      * @return true if initialization and connectivity check succeed; false otherwise.
      */
-    //bool initSPI();
+    bool initSPI();
 
     /**
      * CUSTOM CODE

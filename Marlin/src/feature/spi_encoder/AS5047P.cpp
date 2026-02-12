@@ -200,11 +200,11 @@ bool AS5047P::checkSPICon()
  * @brief Initialize the SPI backend and verify connectivity.
  * @return true if initialization and connectivity check succeed; false otherwise.
  */
-//bool AS5047P::initSPI()
-//{
-//    __spiInterface.init();
-//    return checkSPICon();
-//}
+bool AS5047P::initSPI()
+{
+    __spiInterface.init();
+    return checkSPICon();
+}
 
 /**
  * @brief Initialize the SPI backend and verify connectivity.
@@ -218,7 +218,7 @@ bool AS5047P::checkSPICon()
 
 bool AS5047P::initSPI(SPIClass* _spi)
 {
-    __spiInterface.init(_spi);
+    __spiInterface.init();
     return checkSPICon();
 }
 

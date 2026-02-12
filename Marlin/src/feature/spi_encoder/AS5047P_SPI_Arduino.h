@@ -13,9 +13,10 @@
 
 #ifndef AS5047P_SPI_ARDUINO_h
 #define AS5047P_SPI_ARDUINO_h
+#define AS5047P_SPI_SPEED 1000000	// 1 MHz
 
 #include <inttypes.h>
-#include <SPI.h>
+#include "SPI.h"
 
 #include "AS5047P_Settings.h"
 
@@ -44,7 +45,7 @@ namespace AS5047P_ComBackend
         /**
          * Initializes the spi interface.
          */
-        void init(SPIClass* spi);
+        void init();
 
         /**
          * CUSTOM CODE

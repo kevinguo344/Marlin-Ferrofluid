@@ -41,7 +41,7 @@
  * Note: This is typically **not** supported by the classic Arduino IDE and may
  * fail to compile there. Use an alternative toolchain such as PlatformIO + VS Code.
  */
-#define AS5047P_STD_STRING_SUPPORT
+// #define AS5047P_STD_STRING_SUPPORT
 
 /**
  * @brief ENABLE debug output via Serial.print*().

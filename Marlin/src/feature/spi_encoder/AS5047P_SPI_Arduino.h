@@ -13,10 +13,9 @@
 
 #ifndef AS5047P_SPI_ARDUINO_h
 #define AS5047P_SPI_ARDUINO_h
-#define AS5047P_SPI_SPEED 1000000	// 1 MHz
 
 #include <inttypes.h>
-#include "SPI.h"
+#include <SPI.h>
 
 #include "AS5047P_Settings.h"
 
@@ -73,7 +72,6 @@ namespace AS5047P_ComBackend
     private:
         uint8_t __chipSelectPinNo; ///< The pin number of the chip select pin.
         SPISettings __spiSettings; ///< The spi bus settings.
-        SPIClass* spi;
 
 #if defined(F_CPU) && defined(AS5047P_SPI_ARDUINO_USE_100NS_NOP_DELAY)
 

@@ -37,21 +37,19 @@ namespace AS5047P_ComBackend
         }
 
         void AS5047P_SPI::init()
-        {       //spi = _spi;
-                //spi->begin();
+        {
                 // Initialize the SPI peripheral (idempotent on Arduino).
-                //SPI.begin();
+                SPI.begin();
         }
         
         void AS5047P_SPI::init(uint8_t miso, uint8_t mosi, uint8_t sclk)
-        {       
-                spi = new SPIClass(mosi, miso, sclk);
+        {
                 // Set MISO, MOSI, and SCLK pins
-                //spi->setMISO(miso);
-                //spi->setMOSI(mosi);
-                //spi->setSCLK(sclk);
+                SPI.setMISO(miso);
+                SPI.setMOSI(mosi);
+                SPI.setSCLK(sclk);
                 // Initialize the SPI peripheral
-                spi->begin();
+                SPI.begin();
         }
 
         void AS5047P_SPI::write(const uint16_t regAddress, const uint16_t data)
@@ -59,7 +57,6 @@ namespace AS5047P_ComBackend
                 // Optionally (re-)initialize SPI for each transaction if enabled via macro.
 #ifdef AS5047P_SPI_ARDUINO_INIT_ON_COM_ENAB
                 SPI.begin();
-                //SPI.begin();
 #endif
                 SPI.beginTransaction(__spiSettings);
 
@@ -123,7 +120,7 @@ namespace AS5047P_ComBackend
                 // Per AS5047P timing, the data is returned during the next frame.
                 digitalWrite(__chipSelectPinNo, LOW);
                 AS5047P_Types::SPI_Command_Frame_t nopFrame(AS5047P_Types::NOP_t::REG_ADDRESS, AS5047P_TYPES_READ_CMD);
-                receivedData = spi->transfer16(nopFrame.data.raw);
+                receivedData = SPI.transfer16(nopFrame.data.raw);
                 digitalWrite(__chipSelectPinNo, HIGH);
 
                 // Optional inter-frame gap (kept symmetrical with write path).

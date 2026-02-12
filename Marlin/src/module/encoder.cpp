@@ -116,7 +116,7 @@ uint16_t SPI_Encoder::encoder_update_raw(){
 }
 
 float SPI_Encoder::encoder_update() {
-	uint16_t raw = read_smoothed();
+	uint16_t raw = read_raw();
 	float angle = (raw/(float)16384) * 360;
 	return angle;
 }

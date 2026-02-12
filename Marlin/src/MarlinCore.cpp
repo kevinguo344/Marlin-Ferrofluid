@@ -153,7 +153,7 @@
 #endif
 
 #if ENABLED(SPI_POSITION_ENCODERS)
-  #include "feature/spi_encoder.h"
+  #include "module/spi_encoder.h"
 #endif
 
 #if HAS_TRINAMIC_CONFIG

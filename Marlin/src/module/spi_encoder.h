@@ -9,7 +9,7 @@
 class SPI_Encoder {
 	private:
 		AS5047P *chip;
-		float hom
+		float home_pos;
 	public:
 		SPI_Encoder();
 		SPI_Encoder(uint8_t chipSelectPinNo);
@@ -21,7 +21,7 @@ class SPI_Encoder {
 
 class SPI_Encoder_Mgr {
 	public:
-		static SPI_Encoder encoders[2];
+		static SPI_Encoder encoders[1];
 		static void init();
 		static void reportPosition();
 };

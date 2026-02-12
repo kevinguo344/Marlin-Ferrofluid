@@ -37,15 +37,17 @@ uint16_t SPI_Encoder::getMagnitude(){
 	return chip->readMagnitude();
 }
 
-SPI_Encoder SPI_Encoder_Mgr::encoders[2] = {SPI_Encoder(ENCODER_CS_1), SPI_Encoder(ENCODER_CS_2)};
+//SPI_Encoder SPI_Encoder_Mgr::encoders[2] = {SPI_Encoder(ENCODER_CS_1), SPI_Encoder(ENCODER_CS_2)};
+SPI_Encoder SPI_Encoder_Mgr::encoders[1] = {SPI_Encoder(ENCODER_CS_1)};
 
 void SPI_Encoder_Mgr::init(){
 	encoders[0].init();
-	encoders[1].init();
+	//encoders[1].init();
 }
 
 void SPI_Encoder_Mgr::reportPosition(){
-	SERIAL_ECHO(F("A"), encoders[0].getAngle(), F("B"), encoders[1].getAngle());
+	//SERIAL_ECHO(F("A"), encoders[0].getAngle(), F("B"), encoders[1].getAngle());
+	SERIAL_ECHOLN(F("A"), encoders[0].getAngle());
 }
 
 #endif // SPI_POSITION_ENCODERS

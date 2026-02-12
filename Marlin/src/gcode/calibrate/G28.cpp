@@ -73,6 +73,11 @@
 #define DEBUG_OUT ENABLED(DEBUG_LEVELING_FEATURE)
 #include "../../core/debug_out.h"
 
+#if ENABLED(SPI_POSITION_ENCODERS)
+  #include "../../module/spi_encoder.h"
+  //#include "../module/spi_encoder.h"
+#endif
+
 #if ENABLED(QUICK_HOME)
 
   static void quick_home_xy() {
@@ -433,7 +438,7 @@ void GcodeSuite::G28() {
             idex_set_parked();
 
           #else
-
+            SERIAL_ECHOLN("HOMING X");
             homeaxis(X_AXIS);
 
           #endif
@@ -447,7 +452,10 @@ void GcodeSuite::G28() {
 
       #if HAS_Y_AXIS
         // Home Y (after X)
-        if (DISABLED(HOME_Y_BEFORE_X) && doY) homeaxis(Y_AXIS);
+        if (DISABLED(HOME_Y_BEFORE_X) && doY) {
+          SERIAL_ECHOLN("HOMING Y");
+          homeaxis(Y_AXIS);
+        }
       #endif
 
       #if ALL(FOAMCUTTER_XYUV, HAS_J_AXIS)
@@ -571,6 +579,10 @@ void GcodeSuite::G28() {
       SERIAL_ECHOLNPGM(STR_Z_MOVE_COMP);
 
   #endif // NUM_AXES
+
+  // setting home position
+  SPI_Encoder_Manager.setHome();
+  SERIAL_ECHOLN("FINISHED G28 COMMAND");
 
   ui.refresh();
 

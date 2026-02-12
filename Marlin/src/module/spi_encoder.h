@@ -17,13 +17,15 @@ class SPI_Encoder {
 		void init();
 		float getAngle();
 		uint16_t getMagnitude();
+		void setHomePos(float theta);
 };
 
 class SPI_Encoder_Mgr {
 	public:
-		static SPI_Encoder encoders[1];
+		static SPI_Encoder encoders[2];
 		static void init();
 		static void reportPosition();
+		static void setHome();
 };
 
 extern SPI_Encoder_Mgr SPI_Encoder_Manager;

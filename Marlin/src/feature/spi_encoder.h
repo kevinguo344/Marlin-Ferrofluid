@@ -3,19 +3,17 @@
 #include "./spi_encoder/AS5047P.h"
 
 // PINS TO USE
-#define ENCODER_MOSI PB5
-#define ENCODER_MISO PB4
-#define ENCODER_SCK PB3
-#define ENCODER_CS PA_15
+#define ENCODER_CS_1 PA_15
+#define ENCODER_CS_2 PB_3
 
 class SPI_Encoder {
 	private:
 		AS5047P *chip;
-
+		float hom
 	public:
 		SPI_Encoder();
 		SPI_Encoder(uint8_t chipSelectPinNo);
-		void setChipSelect(uint8_t chipSelectPinNo);
+		//void setChipSelect(uint8_t chipSelectPinNo);
 		void init();
 		float getAngle();
 		uint16_t getMagnitude();
@@ -23,7 +21,7 @@ class SPI_Encoder {
 
 class SPI_Encoder_Mgr {
 	public:
-		static SPI_Encoder encoders[1];
+		static SPI_Encoder encoders[2];
 		static void init();
 		static void reportPosition();
 };

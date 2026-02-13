@@ -29,20 +29,24 @@ void SPI_Encoder::init(){
 	chip->initSPI();
 }
 
-float SPI_Encoder::getAngle(){
-	return chip->readAngleDegree(true);
+uint16_t SPI_Encoder::getAngle(){
+	return chip->readAngleRaw(true);
 }
 
 uint16_t SPI_Encoder::getMagnitude(){
 	return chip->readMagnitude();
 }
 
-void SPI_Encoder::setHomePos(float pos){
+void SPI_Encoder::setHomePos(uint16_t pos){
 	home_pos = pos;
 }
-
+// ENCODER 1: FOR MOTOR 1 (RIGHT SIDE)
+// ENCODER 2: FOR MOTOR 2 (LEFT SIDE)
 SPI_Encoder SPI_Encoder_Mgr::encoders[2] = {SPI_Encoder(ENCODER_CS_1), SPI_Encoder(ENCODER_CS_2)};
-//SPI_Encoder SPI_Encoder_Mgr::encoders[1] = {SPI_Encoder(ENCODER_CS_1)};
+bool SPI_Encoder_Mgr::homed = false;
+
+uint16_t SPI_Encoder_Mgr::thetas[2] = {0,0};
+float SPI_Encoder_Mgr::currPt[2] = {HOME_X, HOME_Y}; // [X, Y]
 
 void SPI_Encoder_Mgr::init(){
 	encoders[0].init();
@@ -50,19 +54,73 @@ void SPI_Encoder_Mgr::init(){
 }
 
 void SPI_Encoder_Mgr::reportPosition(){
-	SERIAL_ECHOLN(F("A"), encoders[0].getAngle(), F("B"), encoders[1].getAngle());
-	//SERIAL_ECHOLN(F("A"), encoders[0].getAngle());
+	uint16_t theta_1_new = encoders[0].getAngle();
+	uint16_t theta_2_new = encoders[1].getAngle();
+
+	SERIAL_ECHOLN(F("A "), theta_1_new, " B ", theta_2_new);
+	if(homed){
+		// GET NEW ANGLES
+		uint16_t theta_1_new = encoders[0].getAngle();
+		uint16_t theta_2_new = encoders[1].getAngle();
+
+		// GET DELTAS OF EACH ANGLE
+		int32_t theta_1_delta = (int32_t)theta_1_new - (int32_t)thetas[0];
+		int32_t theta_2_delta = (int32_t)theta_2_new - (int32_t)thetas[1];
+
+		// DEALS WITH WRAPAROUND ISSUES
+		if (theta_1_delta > 8192) theta_1_delta -= 16384;
+		else if(theta_1_delta < -8192) theta_1_delta += 16384;
+
+		if (theta_2_delta > 8192) theta_2_delta -= 16384;
+		else if(theta_2_delta < -8192) theta_2_delta += 16384;
+
+		// STORES NEW ANGLE VALUES AS CURRENT VALUES
+		thetas[0] = theta_1_new;
+		thetas[1] = theta_2_new;
+
+		// CONVERT DELTAS OF EACH ANGLE TO CHANGE IN COORDINATES
+		// DELTA_B: change in belt length of Motor 1 (RIGHT MOTOR)
+		float DELTA_B = (theta_2_delta/16384.0f) * (1/95.994); // in mm
+		// DELTA_A: change in belt length of Motor 2 (LEFT MOTOR)
+		float DELTA_A = (theta_1_delta/16384.0f) * (1/DEG_PER_MM); // in mm
+		
+		float DELTA_X = 0.5f * (DELTA_A + DELTA_B);
+		float DELTA_Y = 0.5f * (DELTA_A - DELTA_B);
+
+		currPt[0] = currPt[0] + DELTA_X;
+		currPt[1] = currPt[1] + DELTA_Y;
+
+		SERIAL_ECHOLN(F("X "), currPt[0], " Y ", currPt[1]);
+	}		
 }
 
 void SPI_Encoder_Mgr::setHome(){
-	float theta_1_i = encoders[0].getAngle();
+	homed = true;
+
+	currPt[0] = HOME_X;
+	currPt[1] = HOME_Y;
+
+	thetas[0] = encoders[0].getAngle();
+	thetas[1] = encoders[1].getAngle();
+
+	uint16_t theta_1_i = encoders[0].getAngle();
 	encoders[0].setHomePos(theta_1_i);
 	SERIAL_ECHOLN(F("HOME ANGLE 1 IS "), encoders[0].getAngle());
 
-	float theta_2_i = encoders[1].getAngle();
+	uint16_t theta_2_i = encoders[1].getAngle();
 	encoders[1].setHomePos(theta_2_i);
 	SERIAL_ECHOLN(F("HOME ANGLE 2 IS "), encoders[1].getAngle());
 }
+
+//void SPI_Encoder_Mgr::printFormattedFloat(float val){
+//	if (val < 100){
+//		SERIAL_ECHO("0");
+//	}
+//	if (val < 10){
+//		SERIAL_ECHO("0");
+//	}
+//	SERIAL_ECHO(val);
+//}
 
 #endif // SPI_POSITION_ENCODERS
 

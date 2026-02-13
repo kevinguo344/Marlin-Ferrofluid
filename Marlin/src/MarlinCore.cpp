@@ -887,7 +887,7 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
       const millis_t ms = millis();
       if(ELAPSED(ms, spi_en_next_update_ms)) {
         SPI_Encoder_Manager.reportPosition();
-        spi_en_next_update_ms = ms + 500;
+        spi_en_next_update_ms = ms + 200;
       }
     }
   }
@@ -931,14 +931,14 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
   IDLE_DONE:
   TERN_(MARLIN_DEV_MODE, idle_depth--);
 
-  #if ENABLED(SPI_POSITION_ENCODERS)
-    static millis_t spi_en_next_update_ms;
-    const millis_t ms = millis();
-    if(ELAPSED(ms, spi_en_next_update_ms)) {
-      SPI_Encoder_Manager.reportPosition();
-      spi_en_next_update_ms = ms + 500;
-    }
-  #endif
+  //#if ENABLED(SPI_POSITION_ENCODERS)
+  //  static millis_t spi_en_next_update_ms;
+  //  const millis_t ms = millis();
+  //  if(ELAPSED(ms, spi_en_next_update_ms)) {
+  //    SPI_Encoder_Manager.reportPosition();
+  //    spi_en_next_update_ms = ms + 10;
+  //  }
+  //#endif
 
   return;
 

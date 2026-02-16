@@ -46,7 +46,7 @@ SPI_Encoder SPI_Encoder_Mgr::encoders[2] = {SPI_Encoder(ENCODER_CS_1), SPI_Encod
 bool SPI_Encoder_Mgr::homed = false;
 
 uint16_t SPI_Encoder_Mgr::thetas[2] = {0,0};
-float SPI_Encoder_Mgr::currPt[2] = {HOME_X, HOME_Y}; // [X, Y]
+float SPI_Encoder_Mgr::X_Y_Pos[2] = {HOME_X, HOME_Y}; // [X, Y]
 
 void SPI_Encoder_Mgr::init(){
 	encoders[0].init();
@@ -56,8 +56,6 @@ void SPI_Encoder_Mgr::init(){
 void SPI_Encoder_Mgr::reportPosition(){
 	uint16_t theta_1_new = encoders[0].getAngle();
 	uint16_t theta_2_new = encoders[1].getAngle();
-
-	//SERIAL_ECHOLN(F("A "), theta_1_new, " B ", theta_2_new);
 	if(homed){
 		// GET DELTAS OF EACH ANGLE
 		int32_t theta_1_delta = (int32_t)theta_1_new - (int32_t)thetas[0];
@@ -74,53 +72,47 @@ void SPI_Encoder_Mgr::reportPosition(){
 		thetas[0] = theta_1_new;
 		thetas[1] = theta_2_new;
 
-		//SERIAL_ECHOLN(F("THETA_DELTA A: "), (theta_1_delta/16384.0f) * 360.0f, " DELTA B: ", (theta_2_delta/16384.0f) * 360.0f);
-
 		// CONVERT DELTAS OF EACH ANGLE TO CHANGE IN COORDINATES
+		// --- THIS CODE DEFINITELY WORKS ---
 		// DELTA_B: change in belt length of Motor 1 (RIGHT MOTOR)
-		float DELTA_B = (theta_2_delta/16384.0f) * 360.0f * (1/6.0f); //(1/DEG_PER_MM); // in mm
+		float DELTA_B = (theta_2_delta/16384.0f) * 60.0f;
 		// DELTA_A: change in belt length of Motor 2 (LEFT MOTOR)
-		float DELTA_A = (theta_1_delta/16384.0f) * 360.0f * (1/6.0f); //(1/DEG_PER_MM); // in mm
-		
-		//SERIAL_ECHOLN(F("DELTA A: "), DELTA_A, " DELTA B: ", DELTA_B);
+		float DELTA_A = (theta_1_delta/16384.0f) * 60.0f;
 
-		float DELTA_X = 0.5f * (DELTA_A + DELTA_B);
-		float DELTA_Y = 0.5f * (DELTA_A - DELTA_B);
+		// DELTA_X = 0.5f * (DELTA_A + DELTA_B)
+		X_Y_Pos[0] += (0.5f * (DELTA_A + DELTA_B));
+		// DELTA_Y = 0.5f * (DELTA_A - DELTA_B);
+		X_Y_Pos[1] += (0.5f * (DELTA_A - DELTA_B));
 
-		currPt[0] = currPt[0] + DELTA_X;
-		currPt[1] = currPt[1] + DELTA_Y;
+		float VEL = HYPOT((0.5f * (DELTA_A + DELTA_B)), (0.5f * (DELTA_A - DELTA_B))) * 200;
 
-		SERIAL_ECHOLN(F("X "), currPt[0], " Y ", currPt[1]);
+		// --- THIS CODE IS MAYBE MORE EFFICIENT ---
+		//uint16_t DELTA_X = (theta_1_delta >> 13) + (theta_2_delta >> 13);
+		//uint16_t DELTA_Y = (theta_1_delta >> 13) - (theta_2_delta >> 13);
+		//SERIAL_ECHOLN(F("DELTA_X "), DELTA_X, " DELTA_Y ", DELTA_Y);
+		//
+		//X_Y_Pos[0] = X_Y_Pos[0] + (15.0f * (DELTA_X));
+		//X_Y_Pos[1] = X_Y_Pos[1] + (15.0f * (DELTA_Y));
+
+		SERIAL_ECHOLN(F("X "), X_Y_Pos[0], " Y ", X_Y_Pos[1], " V ", VEL);
 	}
 }
 
 void SPI_Encoder_Mgr::setHome(){
 	homed = true;
 
-	currPt[0] = HOME_X;
-	currPt[1] = HOME_Y;
+	X_Y_Pos[0] = HOME_X;
+	X_Y_Pos[1] = HOME_Y;
 
 	thetas[0] = encoders[0].getAngle();
 	thetas[1] = encoders[1].getAngle();
 
 	uint16_t theta_1_i = encoders[0].getAngle();
 	encoders[0].setHomePos(theta_1_i);
-	SERIAL_ECHOLN(F("HOME ANGLE 1 IS "), encoders[0].getAngle());
 
 	uint16_t theta_2_i = encoders[1].getAngle();
 	encoders[1].setHomePos(theta_2_i);
-	SERIAL_ECHOLN(F("HOME ANGLE 2 IS "), encoders[1].getAngle());
 }
-
-//void SPI_Encoder_Mgr::printFormattedFloat(float val){
-//	if (val < 100){
-//		SERIAL_ECHO("0");
-//	}
-//	if (val < 10){
-//		SERIAL_ECHO("0");
-//	}
-//	SERIAL_ECHO(val);
-//}
 
 #endif // SPI_POSITION_ENCODERS
 

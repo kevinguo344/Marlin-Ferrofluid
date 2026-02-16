@@ -27,7 +27,7 @@ class SPI_Encoder_Mgr {
 	private:
 		static bool homed;
 		static uint16_t thetas[2];
-		static float currPt[2];
+		static float X_Y_Pos[2];
 	public:
 		static SPI_Encoder encoders[2];
 		static void init();

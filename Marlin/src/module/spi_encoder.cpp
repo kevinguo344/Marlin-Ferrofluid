@@ -57,12 +57,8 @@ void SPI_Encoder_Mgr::reportPosition(){
 	uint16_t theta_1_new = encoders[0].getAngle();
 	uint16_t theta_2_new = encoders[1].getAngle();
 
-	SERIAL_ECHOLN(F("A "), theta_1_new, " B ", theta_2_new);
+	//SERIAL_ECHOLN(F("A "), theta_1_new, " B ", theta_2_new);
 	if(homed){
-		// GET NEW ANGLES
-		uint16_t theta_1_new = encoders[0].getAngle();
-		uint16_t theta_2_new = encoders[1].getAngle();
-
 		// GET DELTAS OF EACH ANGLE
 		int32_t theta_1_delta = (int32_t)theta_1_new - (int32_t)thetas[0];
 		int32_t theta_2_delta = (int32_t)theta_2_new - (int32_t)thetas[1];
@@ -78,12 +74,16 @@ void SPI_Encoder_Mgr::reportPosition(){
 		thetas[0] = theta_1_new;
 		thetas[1] = theta_2_new;
 
+		//SERIAL_ECHOLN(F("THETA_DELTA A: "), (theta_1_delta/16384.0f) * 360.0f, " DELTA B: ", (theta_2_delta/16384.0f) * 360.0f);
+
 		// CONVERT DELTAS OF EACH ANGLE TO CHANGE IN COORDINATES
 		// DELTA_B: change in belt length of Motor 1 (RIGHT MOTOR)
-		float DELTA_B = (theta_2_delta/16384.0f) * (1/95.994); // in mm
+		float DELTA_B = (theta_2_delta/16384.0f) * 360.0f * (1/6.0f); //(1/DEG_PER_MM); // in mm
 		// DELTA_A: change in belt length of Motor 2 (LEFT MOTOR)
-		float DELTA_A = (theta_1_delta/16384.0f) * (1/DEG_PER_MM); // in mm
+		float DELTA_A = (theta_1_delta/16384.0f) * 360.0f * (1/6.0f); //(1/DEG_PER_MM); // in mm
 		
+		//SERIAL_ECHOLN(F("DELTA A: "), DELTA_A, " DELTA B: ", DELTA_B);
+
 		float DELTA_X = 0.5f * (DELTA_A + DELTA_B);
 		float DELTA_Y = 0.5f * (DELTA_A - DELTA_B);
 
@@ -91,7 +91,7 @@ void SPI_Encoder_Mgr::reportPosition(){
 		currPt[1] = currPt[1] + DELTA_Y;
 
 		SERIAL_ECHOLN(F("X "), currPt[0], " Y ", currPt[1]);
-	}		
+	}
 }
 
 void SPI_Encoder_Mgr::setHome(){

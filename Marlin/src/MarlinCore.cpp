@@ -887,7 +887,7 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
       const millis_t ms = millis();
       if(ELAPSED(ms, spi_en_next_update_ms)) {
         SPI_Encoder_Manager.reportPosition();
-        spi_en_next_update_ms = ms + 200;
+        spi_en_next_update_ms = ms + 5;
       }
     }
   }

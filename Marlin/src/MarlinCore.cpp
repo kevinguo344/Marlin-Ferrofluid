@@ -154,6 +154,9 @@
 
 #if ENABLED(SPI_POSITION_ENCODERS)
   #include "module/spi_encoder.h"
+  #define NUM_SPI_IDLE_UPDATES 5
+  static int SPI_IDLE_UPDATES_SENT = 0;
+  static bool IS_MOVING = false;
 #endif
 
 #if HAS_TRINAMIC_CONFIG
@@ -883,10 +886,16 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
   {
     //include some code to send SPI Encoder position data at a regular interval
     static millis_t spi_en_next_update_ms;
-    if(planner.has_blocks_queued()){
+    IS_MOVING = planner.has_blocks_queued(); // checks if machine is moving
+    if(IS_MOVING || SPI_IDLE_UPDATES_SENT < NUM_SPI_IDLE_UPDATES){
       const millis_t ms = millis();
       if(ELAPSED(ms, spi_en_next_update_ms)) {
-        SPI_Encoder_Manager.reportPosition();
+        if(IS_MOVING && SPI_IDLE_UPDATES_SENT != 0) SPI_IDLE_UPDATES_SENT = 0; // sets to 0 so that encoder updates happen when this movement stops
+        else if(!IS_MOVING){
+          SERIAL_ECHOLN("THIS IS IDLE UPDATE #", (SPI_IDLE_UPDATES_SENT + 1));
+          SPI_IDLE_UPDATES_SENT++; // increments up if no motion but idle updates are below set amount
+        }
+        SPI_Encoder_Manager.reportPosition(ms);
         spi_en_next_update_ms = ms + 5;
       }
     }
@@ -936,7 +945,7 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
   //  const millis_t ms = millis();
   //  if(ELAPSED(ms, spi_en_next_update_ms)) {
   //    SPI_Encoder_Manager.reportPosition();
-  //    spi_en_next_update_ms = ms + 10;
+  //    spi_en_next_update_ms = ms + 5;
   //  }
   //#endif
 
@@ -1621,9 +1630,7 @@ void setup() {
   #endif
 
   #if ENABLED(SPI_POSITION_ENCODERS)
-    //SETUP_RUN(SPI_Encoder_Manager.init());
-    //  
-  //static SPI_Encoder encoder = SPI_Encoder(PA15);
+    //static bool SPI_IDLE_UPDATE_SENT = false;
   #endif
 
   #if ENABLED(EXPERIMENTAL_I2CBUS) && I2C_SLAVE_ADDRESS > 0

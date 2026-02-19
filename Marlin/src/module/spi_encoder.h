@@ -11,7 +11,7 @@
 #define BIT_SHIFTED_ONE (1 << BIT_SHIFT) 	// For converting bitshifted numbers back to decimal numbers
 
 // Home position at the bottom left corner
-#define HOME_X (260 << BIT_SHIFT)			// Maximum of X axis
+#define HOME_X (260 << BIT_SHIFT)			// Maximum of X axis in Q16.16 format
 #define HOME_Y 0							// Minimum of Y axis
 #define ROTATION_IN_MM 60 					// 30 teeth GT2 Pulley has a pitch circumference of 60mm (30 teeth * 2 mm/tooth)
 
@@ -37,14 +37,16 @@ class SPI_Encoder_Mgr {
 		// stores each encoders readings as a magnitude in range [0, 16384)
 		static uint16_t thetas[2];
 
-		// equivalent of X or Y position * 2^16 (using fixed point math to make this faster)
+		// XY in in Q16.16 format, equivalent to X or Y position * 2^16 (using fixed point math to make calculations faster)
 		static int32_t X_Y_Pos[2];
+
+		static millis_t last_update;
 
 		// helper functions to deal with repeated math
 		/**
 		 * @brief Converts angle magnitude readings to mm
 		 * @param theta angle magnitude reading in range [0, 16384)
-		 * @return how much the pulley moved in mm
+		 * @return how much the pulley moved in mm in Q16.16 format
 		 */
 		static inline int32_t angle_to_mm(int32_t theta){
 			// equivalent to (theta * 60.0)/16384.0
@@ -63,7 +65,7 @@ class SPI_Encoder_Mgr {
 	public:
 		static SPI_Encoder encoders[2];
 		static void init();
-		static void reportPosition();
+		static void reportPosition(millis_t call_time);
 		static void setHome();
 };
 

@@ -162,6 +162,9 @@ __pycache__
 # IOLogger logs
 *_log.csv
 
+#KiCAD
+PCB Custom-backups/
+
 # Misc.
 *~
 *.orig

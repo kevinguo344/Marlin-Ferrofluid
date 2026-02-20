@@ -164,6 +164,7 @@ __pycache__
 
 #KiCAD
 PCB Custom-backups/
+*.lck
 
 # Misc.
 *~

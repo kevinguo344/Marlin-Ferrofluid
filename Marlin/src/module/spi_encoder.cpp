@@ -48,17 +48,20 @@ bool SPI_Encoder_Mgr::homed = false;
 uint16_t SPI_Encoder_Mgr::thetas[2] = {0,0};
 int32_t SPI_Encoder_Mgr::X_Y_Pos[2] = {HOME_X, HOME_Y}; // [X, Y]0
 millis_t SPI_Encoder_Mgr::last_update = millis();
+float SPI_Encoder_Mgr::vel_acc_time = 0.0f;
+float SPI_Encoder_Mgr::vel_acc_dist = 0.0f;
+float SPI_Encoder_Mgr::VEL = 0.0f;
 
 void SPI_Encoder_Mgr::init(){
 	encoders[0].init();
 	encoders[1].init();
 }
 
-void SPI_Encoder_Mgr::reportPosition(millis_t call_time){
+void SPI_Encoder_Mgr::reportPosition(millis_t call_time, bool idling){
+	if(!homed) return;
+
 	float time_elapsed = (call_time - last_update) * 0.001f;
 	last_update = call_time;
-
-	if(!homed) return;
 
 	//---- NOTE: CALCULATIONS ARE DONE MAINLY IN Q16.16 FORMAT (16 bits for integer values, 16 bits for decimal values)
 	uint16_t theta_1_new = encoders[0].getAngle();
@@ -93,8 +96,20 @@ void SPI_Encoder_Mgr::reportPosition(millis_t call_time){
 	float DELTA_X_REAL = DELTA_X/(float)BIT_SHIFTED_ONE;
 	float DELTA_Y_REAL = DELTA_Y/(float)BIT_SHIFTED_ONE;
 
-	float VEL = HYPOT(DELTA_X_REAL, DELTA_Y_REAL)/time_elapsed;
-	if (VEL < 5.0) VEL = 0.0;
+	if(!idling){
+		// do Exponential Moving Average for velocity
+		vel_acc_time += time_elapsed;
+		vel_acc_dist += HYPOT(DELTA_X_REAL, DELTA_Y_REAL);
+
+		if (vel_acc_time >= VEL_TIME_STEP){
+			VEL += VEL_ALPHA * ((vel_acc_dist/vel_acc_time) - VEL);
+			vel_acc_time = 0.0f;
+			vel_acc_dist = 0.0f;
+			if (VEL < VEL_EPS) VEL = 0.0;
+		}
+	} else {
+		VEL = 0.0;
+	}
 
 	SERIAL_ECHOLN(F("X "), (X_Y_Pos[0]/(float)BIT_SHIFTED_ONE), " Y ", (X_Y_Pos[1]/(float)BIT_SHIFTED_ONE), " V ", VEL);
 }

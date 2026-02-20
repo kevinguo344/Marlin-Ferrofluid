@@ -3,8 +3,8 @@
 #include "./spi_encoder/AS5047P.h"
 
 // PINS TO USE
-#define ENCODER_CS_1 PA_15
-#define ENCODER_CS_2 PB_3
+#define ENCODER_CS_1 PC6//PA_15
+#define ENCODER_CS_2 PC7//PB_3
 
 // USED FOR BITSHIFTING
 #define BIT_SHIFT 16 						// How many bits shifting for calculation (using int32_t so 16 bits for integer, 16 bits for decimal)
@@ -14,11 +14,13 @@
 #define HOME_X (260 << BIT_SHIFT)			// Maximum of X axis in Q16.16 format
 #define HOME_Y 0							// Minimum of Y axis
 #define ROTATION_IN_MM 60 					// 30 teeth GT2 Pulley has a pitch circumference of 60mm (30 teeth * 2 mm/tooth)
+#define VEL_TIME_STEP 0.01f
+#define VEL_EPS 5.0f
+#define VEL_ALPHA 0.2f
 
 class SPI_Encoder {
 	private:
 		AS5047P *chip;
-		//uint16_t home_pos;
 	public:
 		SPI_Encoder();
 		SPI_Encoder(uint8_t chipSelectPinNo);
@@ -41,6 +43,10 @@ class SPI_Encoder_Mgr {
 		static int32_t X_Y_Pos[2];
 
 		static millis_t last_update;
+
+		static float vel_acc_time;
+		static float vel_acc_dist;
+		static float VEL;
 
 		// helper functions to deal with repeated math
 		/**
@@ -65,7 +71,7 @@ class SPI_Encoder_Mgr {
 	public:
 		static SPI_Encoder encoders[2];
 		static void init();
-		static void reportPosition(millis_t call_time);
+		static void reportPosition(millis_t call_time, bool idling);
 		static void setHome();
 };
 

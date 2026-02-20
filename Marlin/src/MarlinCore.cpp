@@ -895,7 +895,7 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
           SERIAL_ECHOLN("THIS IS IDLE UPDATE #", (SPI_IDLE_UPDATES_SENT + 1));
           SPI_IDLE_UPDATES_SENT++; // increments up if no motion but idle updates are below set amount
         }
-        SPI_Encoder_Manager.reportPosition(ms);
+        SPI_Encoder_Manager.reportPosition(ms, !IS_MOVING);
         spi_en_next_update_ms = ms + 5;
       }
     }
@@ -939,15 +939,6 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
 
   IDLE_DONE:
   TERN_(MARLIN_DEV_MODE, idle_depth--);
-
-  //#if ENABLED(SPI_POSITION_ENCODERS)
-  //  static millis_t spi_en_next_update_ms;
-  //  const millis_t ms = millis();
-  //  if(ELAPSED(ms, spi_en_next_update_ms)) {
-  //    SPI_Encoder_Manager.reportPosition();
-  //    spi_en_next_update_ms = ms + 5;
-  //  }
-  //#endif
 
   return;
 
@@ -1627,10 +1618,6 @@ void setup() {
 
   #if ENABLED(I2C_POSITION_ENCODERS)
     SETUP_RUN(I2CPEM.init());
-  #endif
-
-  #if ENABLED(SPI_POSITION_ENCODERS)
-    //static bool SPI_IDLE_UPDATE_SENT = false;
   #endif
 
   #if ENABLED(EXPERIMENTAL_I2CBUS) && I2C_SLAVE_ADDRESS > 0

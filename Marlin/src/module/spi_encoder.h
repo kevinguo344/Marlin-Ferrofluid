@@ -3,8 +3,8 @@
 #include "./spi_encoder/AS5047P.h"
 
 // PINS TO USE
-#define ENCODER_CS_1 PC6//PA_15
-#define ENCODER_CS_2 PC7//PB_3
+#define ENCODER_CS_1 PC6
+#define ENCODER_CS_2 PC7
 
 // USED FOR BITSHIFTING
 #define BIT_SHIFT 16 						// How many bits shifting for calculation (using int32_t so 16 bits for integer, 16 bits for decimal)
@@ -14,9 +14,14 @@
 #define HOME_X (260 << BIT_SHIFT)			// Maximum of X axis in Q16.16 format
 #define HOME_Y 0							// Minimum of Y axis
 #define ROTATION_IN_MM 60 					// 30 teeth GT2 Pulley has a pitch circumference of 60mm (30 teeth * 2 mm/tooth)
-#define VEL_TIME_STEP 0.01f
-#define VEL_EPS 5.0f
-#define VEL_ALPHA 0.2f
+
+// For Exponential Moving Average (EMA) Smoothing in velocity readings
+#define VEL_SMOOTHING_ENABLED
+#ifdef VEL_SMOOTHING_ENABLED
+	#define VEL_TIME_STEP 0.01f
+	#define VEL_EPS 5.0f
+	#define VEL_ALPHA 0.2f
+#endif
 
 class SPI_Encoder {
 	private:
@@ -26,9 +31,6 @@ class SPI_Encoder {
 		SPI_Encoder(uint8_t chipSelectPinNo);
 		void init();
 		uint16_t getAngle();
-		uint16_t getMagnitude();
-		// not sure how necessary this function is, may remove
-		//void setHomePos(uint16_t theta);
 };
 
 class SPI_Encoder_Mgr {
@@ -44,8 +46,10 @@ class SPI_Encoder_Mgr {
 
 		static millis_t last_update;
 
-		static float vel_acc_time;
-		static float vel_acc_dist;
+		#ifdef VEL_SMOOTHING_ENABLED
+			static float vel_acc_time;
+			static float vel_acc_dist;
+		#endif
 		static float VEL;
 
 		// helper functions to deal with repeated math

@@ -154,7 +154,7 @@
 
 #if ENABLED(SPI_POSITION_ENCODERS)
   #include "module/spi_encoder.h"
-  #define NUM_SPI_IDLE_UPDATES 5
+  #define NUM_SPI_IDLE_UPDATES 10
   static int SPI_IDLE_UPDATES_SENT = 0;
   static bool IS_MOVING = false;
 #endif
@@ -884,19 +884,20 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
   // Run SPI Position Encoders
   #if ENABLED(SPI_POSITION_ENCODERS)
   {
-    //include some code to send SPI Encoder position data at a regular interval
     static millis_t spi_en_next_update_ms;
     IS_MOVING = planner.has_blocks_queued(); // checks if machine is moving
     if(IS_MOVING || SPI_IDLE_UPDATES_SENT < NUM_SPI_IDLE_UPDATES){
       const millis_t ms = millis();
       if(ELAPSED(ms, spi_en_next_update_ms)) {
-        if(IS_MOVING && SPI_IDLE_UPDATES_SENT != 0) SPI_IDLE_UPDATES_SENT = 0; // sets to 0 so that encoder updates happen when this movement stops
+        // sets to 0 so that encoder updates happen when this movement stops
+        if(IS_MOVING && SPI_IDLE_UPDATES_SENT != 0) SPI_IDLE_UPDATES_SENT = 0;
         else if(!IS_MOVING){
           SERIAL_ECHOLN("THIS IS IDLE UPDATE #", (SPI_IDLE_UPDATES_SENT + 1));
-          SPI_IDLE_UPDATES_SENT++; // increments up if no motion but idle updates are below set amount
+          // increments up if no motion but idle updates are below set amount
+          SPI_IDLE_UPDATES_SENT++;
         }
         SPI_Encoder_Manager.reportPosition(ms, !IS_MOVING);
-        spi_en_next_update_ms = ms + 5;
+        spi_en_next_update_ms = ms + 2;
       }
     }
   }

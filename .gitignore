@@ -164,7 +164,11 @@ __pycache__
 
 #KiCAD
 PCB Custom-backups/
+Fabrication Files/
+fp-info-cache
+fp-lib-table
 *.lck
+*.zip
 
 # Misc.
 *~

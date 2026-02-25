@@ -16,7 +16,7 @@
 #define ROTATION_IN_MM 60 					// 30 teeth GT2 Pulley has a pitch circumference of 60mm (30 teeth * 2 mm/tooth)
 
 // For Exponential Moving Average (EMA) Smoothing in velocity readings
-#define VEL_SMOOTHING_ENABLED
+//#define VEL_SMOOTHING_ENABLED
 #ifdef VEL_SMOOTHING_ENABLED
 	#define VEL_TIME_STEP 0.01f
 	#define VEL_EPS 5.0f

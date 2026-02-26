@@ -896,7 +896,7 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
           // increments up if no motion but idle updates are below set amount
           SPI_IDLE_UPDATES_SENT++;
         }
-        SPI_Encoder_Manager.reportPosition(ms, false);
+        SPI_Encoder_Manager.reportPosition(ms);
         spi_en_next_update_ms = ms + 5;
       }
     }

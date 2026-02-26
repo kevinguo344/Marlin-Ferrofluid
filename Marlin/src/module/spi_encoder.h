@@ -75,7 +75,7 @@ class SPI_Encoder_Mgr {
 	public:
 		static SPI_Encoder encoders[2];
 		static void init();
-		static void reportPosition(millis_t call_time, bool idling);
+		static void reportPosition(millis_t call_time);
 		static void setHome();
 };
 

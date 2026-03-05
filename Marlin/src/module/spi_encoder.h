@@ -3,8 +3,8 @@
 #include "./spi_encoder/AS5047P.h"
 
 // PINS TO USE
-#define ENCODER_CS_1 PC6
-#define ENCODER_CS_2 PC7
+#define ENCODER_CS_1 PC7
+#define ENCODER_CS_2 PE4
 
 // USED FOR BITSHIFTING
 #define BIT_SHIFT 16 						// How many bits shifting for calculation (using int32_t so 16 bits for integer, 16 bits for decimal)

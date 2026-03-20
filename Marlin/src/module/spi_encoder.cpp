@@ -46,8 +46,8 @@ millis_t SPI_Encoder_Mgr::last_update = millis();
 	float SPI_Encoder_Mgr::vel_acc_time = 0.0f;
 	float SPI_Encoder_Mgr::vel_acc_dist = 0.0f;
 #endif
-/*
-static const uint16_t hypot_lut[256] PROGMEM = {
+
+static const uint32_t hypot_lut[256] PROGMEM = {
 	65536, 65537, 65538, 65541, 65544, 65549, 65554, 65561,
 	65568, 65577, 65586, 65597, 65609, 65621, 65635, 65649,
 	65665, 65681, 65699, 65718, 65737, 65758, 65779, 65802,
@@ -80,7 +80,24 @@ static const uint16_t hypot_lut[256] PROGMEM = {
 	88601, 88774, 88947, 89121, 89296, 89471, 89646, 89821,
 	89997, 90174, 90350, 90527, 90705, 90883, 91061, 91240,
 	91419, 91598, 91778, 91958, 92138, 92319, 92500, 92682
-};*/
+};
+
+static inline int32_t hypot_lut_fp(int32_t x, int32_t y) {
+  x = abs(x);
+  y = abs(y);
+
+  if (x == 0) return y;
+  if (y == 0) return x;
+
+  int32_t a = max(x, y);
+  int32_t b = min(x, y);
+
+  uint8_t idx = (uint32_t(b) << 8) / a;
+
+  const uint32_t k = pgm_read_dword(&hypot_lut[idx]);
+
+  return (int64_t(a) * k) >> BIT_SHIFT;
+}
 
 float SPI_Encoder_Mgr::VEL = 0.0f;
 
@@ -125,8 +142,8 @@ void SPI_Encoder_Mgr::reportPosition(millis_t call_time){
 	X_Y_Pos[1] += DELTA_Y;
 
 	// converts DELTAs from Q16.16 format to regular decimal numbers
-	float DELTA_X_REAL = DELTA_X/(float)BIT_SHIFTED_ONE;
-	float DELTA_Y_REAL = DELTA_Y/(float)BIT_SHIFTED_ONE;
+	//float DELTA_X_REAL = DELTA_X/(float)BIT_SHIFTED_ONE;
+	//float DELTA_Y_REAL = DELTA_Y/(float)BIT_SHIFTED_ONE;
 
 	#ifdef VEL_SMOOTHING_ENABLED
 		// do Exponential Moving Average for velocity
@@ -140,7 +157,7 @@ void SPI_Encoder_Mgr::reportPosition(millis_t call_time){
 			if (VEL < VEL_EPS) VEL = 0.0;
 		}
 	#else
-		VEL = HYPOT(DELTA_X_REAL, DELTA_Y_REAL)/time_elapsed;
+		VEL = (hypot_lut_fp(DELTA_X, DELTA_Y)/(float)BIT_SHIFTED_ONE)/time_elapsed;
 		if (VEL <= 5.0f) VEL = 0.0f;
 	#endif
 	SERIAL_ECHOLN(F("X "), (X_Y_Pos[0]/(float)BIT_SHIFTED_ONE), " Y ", (X_Y_Pos[1]/(float)BIT_SHIFTED_ONE), " V ", VEL);

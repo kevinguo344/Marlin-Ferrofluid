@@ -157,6 +157,7 @@ void SPI_Encoder_Mgr::reportPosition(millis_t call_time){
 			if (VEL < VEL_EPS) VEL = 0.0;
 		}
 	#else
+		//VEL = HYPOT(DELTA_X_REAL, DELTA_Y_REAL)/time_elapsed;
 		VEL = (hypot_lut_fp(DELTA_X, DELTA_Y)/(float)BIT_SHIFTED_ONE)/time_elapsed;
 		if (VEL <= 5.0f) VEL = 0.0f;
 	#endif

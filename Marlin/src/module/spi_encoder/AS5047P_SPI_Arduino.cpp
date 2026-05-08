@@ -42,15 +42,15 @@ namespace AS5047P_ComBackend
                 SPI.begin();
         }
         
-        void AS5047P_SPI::init(uint8_t miso, uint8_t mosi, uint8_t sclk)
-        {
-                // Set MISO, MOSI, and SCLK pins
-                SPI.setMISO(miso);
-                SPI.setMOSI(mosi);
-                SPI.setSCLK(sclk);
-                // Initialize the SPI peripheral
-                SPI.begin();
-        }
+        //void AS5047P_SPI::init(uint8_t miso, uint8_t mosi, uint8_t sclk)
+        //{
+        //        // Set MISO, MOSI, and SCLK pins
+        //        SPI.setMISO(miso);
+        //        SPI.setMOSI(mosi);
+        //        SPI.setSCLK(sclk);
+        //        // Initialize the SPI peripheral
+        //        SPI.begin();
+        //}
 
         void AS5047P_SPI::write(const uint16_t regAddress, const uint16_t data)
         {

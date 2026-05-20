@@ -161,7 +161,8 @@ void SPI_Encoder_Mgr::reportPosition(millis_t call_time){
 		VEL = (hypot_lut_fp(DELTA_X, DELTA_Y)/(float)BIT_SHIFTED_ONE)/time_elapsed;
 		if (VEL <= 5.0f) VEL = 0.0f;
 	#endif
-	SERIAL_ECHOLN(F("X "), (X_Y_Pos[0]/(float)BIT_SHIFTED_ONE), " Y ", (X_Y_Pos[1]/(float)BIT_SHIFTED_ONE), " V ", VEL);
+	// COMMENTING OUT UNTIL READY FOR FINAL VERSION
+	//SERIAL_ECHOLN(F("X "), (X_Y_Pos[0]/(float)BIT_SHIFTED_ONE), " Y ", (X_Y_Pos[1]/(float)BIT_SHIFTED_ONE), " V ", VEL);
 }
 
 void SPI_Encoder_Mgr::setHome(){

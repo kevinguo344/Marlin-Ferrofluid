@@ -11,8 +11,8 @@
 #define BIT_SHIFTED_ONE (1 << BIT_SHIFT) 	// For converting bitshifted numbers back to decimal numbers
 
 // Home position at the bottom left corner
-#define HOME_X (0 << BIT_SHIFT)			// Maximum of X axis in Q16.16 format
-#define HOME_Y 0							// Minimum of Y axis
+#define HOME_X (0 << BIT_SHIFT)				// Minimum of X axis in Q16.16 format
+#define HOME_Y (122 << BIT_SHIFT)			// Minimum of Y axis
 #define ROTATION_IN_MM 60 					// 30 teeth GT2 Pulley has a pitch circumference of 60mm (30 teeth * 2 mm/tooth)
 
 // For Exponential Moving Average (EMA) Smoothing in velocity readings
@@ -75,6 +75,7 @@ class SPI_Encoder_Mgr {
 	public:
 		static SPI_Encoder encoders[2];
 		static void init();
+		static void reportPosition__debug();
 		static void reportPosition(millis_t call_time);
 		static void setHome();
 };

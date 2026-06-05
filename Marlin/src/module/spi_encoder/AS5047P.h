@@ -70,15 +70,15 @@ public:
      */
     bool initSPI();
 
-    /**
-     * CUSTOM CODE
-     * @brief Initialize the sensor and verify the connection on SPI pins that are different from the default.
-     *        Call this once before using the sensor object.
-     * @param miso The pin number of the MISO (Master In Slave Out) pin
-     * @param mosi The pin number of the MOSI (Master Out Slave In) pin
-     * @param sclk The pin number of the SCLK (Clock) pin
-     */
-    bool initSPI(uint8_t miso, uint8_t mosi, uint8_t sclk);
+    ///**
+    // * CUSTOM CODE
+    // * @brief Initialize the sensor and verify the connection on SPI pins that are different from the default.
+    // *        Call this once before using the sensor object.
+    // * @param miso The pin number of the MISO (Master In Slave Out) pin
+    // * @param mosi The pin number of the MOSI (Master Out Slave In) pin
+    // * @param sclk The pin number of the SCLK (Clock) pin
+    // */
+    //bool initSPI(uint8_t miso, uint8_t mosi, uint8_t sclk);
 
     // ======================================================================
     // Utilities

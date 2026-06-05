@@ -106,9 +106,14 @@ void SPI_Encoder_Mgr::init(){
 	encoders[1].init();
 }
 
+void SPI_Encoder_Mgr::reportPosition__debug(){
+	uint16_t theta_1 = encoders[0].getAngle();
+	uint16_t theta_2 = encoders[1].getAngle();
+	SERIAL_ECHOLN(F("ENCODER 1: "), theta_1, " ENCODER 2: ", theta_2);
+}
+
 void SPI_Encoder_Mgr::reportPosition(millis_t call_time){
 	if(!homed) return;
-
 	float time_elapsed = (call_time - last_update) * 0.001f;
 	last_update = call_time;
 
@@ -162,7 +167,7 @@ void SPI_Encoder_Mgr::reportPosition(millis_t call_time){
 		if (VEL <= 5.0f) VEL = 0.0f;
 	#endif
 	// COMMENTING OUT UNTIL READY FOR FINAL VERSION
-	//SERIAL_ECHOLN(F("X "), (X_Y_Pos[0]/(float)BIT_SHIFTED_ONE), " Y ", (X_Y_Pos[1]/(float)BIT_SHIFTED_ONE), " V ", VEL);
+	SERIAL_ECHOLN(F("X "), (X_Y_Pos[0]/(float)BIT_SHIFTED_ONE), " Y ", (X_Y_Pos[1]/(float)BIT_SHIFTED_ONE), " V ", VEL);
 }
 
 void SPI_Encoder_Mgr::setHome(){

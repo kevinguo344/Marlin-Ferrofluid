@@ -4,14 +4,7 @@
     "active_layer_preset": "",
     "auto_track_width": true,
     "hidden_netclasses": [],
-    "hidden_nets": [
-      "3.3V",
-      "VM",
-      "B1",
-      "B2",
-      "A1",
-      "A2"
-    ],
+    "hidden_nets": [],
     "high_contrast_mode": 0,
     "net_color_mode": 1,
     "opacity": {
@@ -39,6 +32,7 @@
       "vias",
       "footprint_text",
       "footprint_anchors",
+      "ratsnest",
       "grid",
       "footprints_front",
       "footprints_back",
@@ -56,7 +50,7 @@
       "conflict_shadows",
       "shapes"
     ],
-    "visible_layers": "ffffffff_ffffffff_ffffd575_57555575",
+    "visible_layers": "ffffffff_ffffffff_ffffd575_575555f5",
     "zone_display_mode": 0
   },
   "git": {
@@ -65,7 +59,7 @@
     "ssh_key": ""
   },
   "meta": {
-    "filename": "SPI Encoder Adapter Board.kicad_prl",
+    "filename": "SPI Encoder Adapter Board-SKR Turbo.kicad_prl",
     "version": 5
   },
   "net_inspector_panel": {

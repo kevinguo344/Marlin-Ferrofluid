@@ -102,8 +102,17 @@ static inline int32_t hypot_lut_fp(int32_t x, int32_t y) {
 float SPI_Encoder_Mgr::VEL = 0.0f;
 
 void SPI_Encoder_Mgr::init(){
+	SERIAL_ECHOLN(F("ENCODER 1: "));
 	encoders[0].init();
+	SERIAL_ECHOLN(F("ENCODER 2: "));
 	encoders[1].init();
+	SERIAL_ECHOLN(F("\n"));
+}
+
+void SPI_Encoder_Mgr::reportPosition__debug(){
+	uint16_t theta_1 = encoders[0].getAngle();
+	uint16_t theta_2 = encoders[1].getAngle();
+	SERIAL_ECHOLN(F("ENCODER 1: "), theta_1, " ENCODER 2: ", theta_2);
 }
 
 void SPI_Encoder_Mgr::reportPosition(millis_t call_time){

@@ -884,22 +884,28 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
   // Run SPI Position Encoders
   #if ENABLED(SPI_POSITION_ENCODERS)
   {
-    static millis_t spi_en_next_update_ms;
-    IS_MOVING = planner.has_blocks_queued(); // checks if machine is moving
-    if(IS_MOVING || SPI_IDLE_UPDATES_SENT < NUM_SPI_IDLE_UPDATES){
-      const millis_t ms = millis();
-      if(ELAPSED(ms, spi_en_next_update_ms)) {
-        // sets to 0 so that encoder updates happen when this movement stops
-        if(IS_MOVING && SPI_IDLE_UPDATES_SENT != 0) SPI_IDLE_UPDATES_SENT = 0;
-        else if(!IS_MOVING){
-          //SERIAL_ECHOLN("THIS IS IDLE UPDATE #", (SPI_IDLE_UPDATES_SENT + 1));
-          // increments up if no motion but idle updates are below set amount
-          SPI_IDLE_UPDATES_SENT++;
-        }
-        SPI_Encoder_Manager.reportPosition(ms);
-        spi_en_next_update_ms = ms + 5;
-      }
-    }
+    //static millis_t spi_en_next_update_ms;
+    //const millis_t ms = millis();
+    //if(ELAPSED(ms, spi_en_next_update_ms)) {
+    //  //SPI_Encoder_Manager.init();
+    //  SPI_Encoder_Manager.reportPosition__debug();
+    //  spi_en_next_update_ms = ms + 100;
+    //}
+    //IS_MOVING = planner.has_blocks_queued(); // checks if machine is moving
+    //if(IS_MOVING || SPI_IDLE_UPDATES_SENT < NUM_SPI_IDLE_UPDATES){
+    //  const millis_t ms = millis();
+    //  if(ELAPSED(ms, spi_en_next_update_ms)) {
+    //    // sets to 0 so that encoder updates happen when this movement stops
+    //    if(IS_MOVING && SPI_IDLE_UPDATES_SENT != 0) SPI_IDLE_UPDATES_SENT = 0;
+    //    else if(!IS_MOVING){
+    //      //SERIAL_ECHOLN("THIS IS IDLE UPDATE #", (SPI_IDLE_UPDATES_SENT + 1));
+    //      // increments up if no motion but idle updates are below set amount
+    //      SPI_IDLE_UPDATES_SENT++;
+    //    }
+    //    SPI_Encoder_Manager.reportPosition(ms);
+    //    spi_en_next_update_ms = ms + 5;
+    //  }
+    //}
   }
   #endif
 

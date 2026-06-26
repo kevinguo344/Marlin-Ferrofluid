@@ -4,7 +4,7 @@
 
 // PINS TO USE
 #define ENCODER_CS_1 PC7
-#define ENCODER_CS_2 PE4
+#define ENCODER_CS_2 PE1
 
 // USED FOR BITSHIFTING
 #define BIT_SHIFT 16 						// How many bits shifting for calculation (using int32_t so 16 bits for integer, 16 bits for decimal)
@@ -75,6 +75,7 @@ class SPI_Encoder_Mgr {
 	public:
 		static SPI_Encoder encoders[2];
 		static void init();
+		static void reportPosition__debug();
 		static void reportPosition(millis_t call_time);
 		static void setHome();
 };

@@ -218,12 +218,16 @@ inline void report_more_positions() {
 inline void report_logical_position(const xyze_pos_t &rpos) {
   const xyze_pos_t lpos = rpos.asLogical();
   #if NUM_AXES
-    SERIAL_ECHOPGM_P(LOGICAL_AXIS_PAIRED_LIST(
-      SP_E_LBL, lpos.e,
-         X_LBL, lpos.x,  SP_Y_LBL, lpos.y,  SP_Z_LBL, lpos.z,
-      SP_I_LBL, lpos.i,  SP_J_LBL, lpos.j,  SP_K_LBL, lpos.k,
-      SP_U_LBL, lpos.u,  SP_V_LBL, lpos.v,  SP_W_LBL, lpos.w
-    ));
+    if(lpos.x == 260.00 && lpos.y == 0.00 && !isHomed){
+      isHomed = true;
+      x_pos_curr = lpos.x;
+      y_pos_curr = lpos.y;
+    }
+    if (isHomed){
+      SERIAL_ECHOLN(F("X "), lpos.x, " Y ", lpos.y, " V ", HYPOT(lpos.x - x_pos_curr, lpos.y - y_pos_curr) * 200);
+      x_pos_curr = lpos.x;
+      y_pos_curr = lpos.y;
+    }
   #endif
 }
 
@@ -241,13 +245,13 @@ void report_real_position() {
   TERN_(HAS_POSITION_MODIFIERS, planner.unapply_modifiers(npos, true));
 
   report_logical_position(npos);
-  report_more_positions();
+  //report_more_positions();
 }
 
 // Report the logical current position according to the most recent G-code command
 void report_current_position() {
   report_logical_position(current_position);
-  report_more_positions();
+  //report_more_positions();
 }
 
 /**
@@ -258,7 +262,7 @@ void report_current_position() {
  */
 void report_current_position_projected() {
   report_logical_position(current_position);
-  stepper.report_a_position(planner.position);
+  //stepper.report_a_position(planner.position);
 }
 
 #if HAS_HOMING_CURRENT

@@ -581,7 +581,7 @@ void GcodeSuite::G28() {
   #endif // NUM_AXES
 
   // setting home position
-  SPI_Encoder_Manager.setHome();
+  //SPI_Encoder_Manager.setHome();
   SERIAL_ECHOLN("FINISHED G28 COMMAND");
 
   ui.refresh();

@@ -3625,9 +3625,9 @@ void Stepper::report_a_position(const xyz_long_t &pos) {
 
 void Stepper::report_positions() {
   AVR_ATOMIC_SECTION_START();
-  const xyz_long_t pos = count_position;
+  //const xyz_long_t pos = count_position;
   AVR_ATOMIC_SECTION_END();
-  report_a_position(pos);
+  //report_a_position(pos);
 }
 
 #if ENABLED(FT_MOTION)

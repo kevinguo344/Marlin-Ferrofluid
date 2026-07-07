@@ -1946,13 +1946,13 @@
 // @section geometry
 
 // The size of the printable area
-#define HANGING
+//#define HANGING
 #ifdef HANGING
   #define X_BED_SIZE 250
   #define Y_BED_SIZE 250
 #else
-  #define X_BED_SIZE 125
-  #define Y_BED_SIZE 125
+  #define X_BED_SIZE 120
+  #define Y_BED_SIZE 120
 #endif
 
 // Travel limits (linear=mm, rotational=°) after homing, corresponding to endstop positions.

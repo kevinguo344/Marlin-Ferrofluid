@@ -4085,9 +4085,9 @@
 /**
  * Auto-report position with M154 S<seconds>
  */
-//#define AUTO_REPORT_POSITION
+#define AUTO_REPORT_POSITION
 #if ENABLED(AUTO_REPORT_POSITION)
-  //#define AUTO_REPORT_REAL_POSITION // Auto-report the real position
+  #define AUTO_REPORT_REAL_POSITION // Auto-report the real position
 #endif
 
 /**
@@ -4416,7 +4416,7 @@
 
 // @section encoder
 
-#define SPI_POSITION_ENCODERS
+//#define SPI_POSITION_ENCODERS
 
 /**
  * Analog Joystick(s)

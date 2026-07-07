@@ -154,8 +154,14 @@
 
 #if ENABLED(SPI_POSITION_ENCODERS)
   #include "module/spi_encoder.h"
-  #define NUM_SPI_IDLE_UPDATES 10
-  static int SPI_IDLE_UPDATES_SENT = 0;
+  //#define NUM_SPI_IDLE_UPDATES 10
+  //static int SPI_IDLE_UPDATES_SENT = 0;
+  //static bool IS_MOVING = false;
+#endif
+
+#if ENABLED(AUTO_REPORT_POSITION)
+  #define NUM_IDLE_UPDATES 5
+  static int IDLE_UPDATES_SENT = 0;
   static bool IS_MOVING = false;
 #endif
 
@@ -911,13 +917,26 @@ void Marlin::idle(const bool no_stepper_sleep/*=false*/) {
 
   // Auto-report Temperatures / SD Status
   #if HAS_AUTO_REPORTING
-    if (!gcode.autoreport_paused) {
-      TERN_(AUTO_REPORT_TEMPERATURES, thermalManager.auto_reporter.tick());
-      TERN_(AUTO_REPORT_FANS, fan_check.auto_reporter.tick());
-      TERN_(AUTO_REPORT_SD_STATUS, card.auto_reporter.tick());
-      TERN_(AUTO_REPORT_POSITION, position_auto_reporter.tick());
-      TERN_(BUFFER_MONITORING, queue.auto_report_buffer_statistics());
+    static millis_t next_update_ms;
+    IS_MOVING = planner.has_blocks_queued();
+    if (IS_MOVING || IDLE_UPDATES_SENT < NUM_IDLE_UPDATES){ // checks if machine is moving
+      const millis_t ms = millis();
+      if(ELAPSED(ms, next_update_ms)){
+        if(IS_MOVING && IDLE_UPDATES_SENT != 0) IDLE_UPDATES_SENT = 0;
+        else if(!IS_MOVING){
+          IDLE_UPDATES_SENT++;
+        }
+        TERN_(AUTO_REPORT_POSITION, position_auto_reporter.tick());
+        next_update_ms = ms + 5;
+      }
     }
+    //if (!gcode.autoreport_paused) {
+    //  TERN_(AUTO_REPORT_TEMPERATURES, thermalManager.auto_reporter.tick());
+    //  TERN_(AUTO_REPORT_FANS, fan_check.auto_reporter.tick());
+    //  TERN_(AUTO_REPORT_SD_STATUS, card.auto_reporter.tick());
+    //  //TERN_(AUTO_REPORT_POSITION, position_auto_reporter.tick());
+    //  TERN_(BUFFER_MONITORING, queue.auto_report_buffer_statistics());
+    //}
   #endif
 
   // Update the Průša MMU2

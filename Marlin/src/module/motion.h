@@ -270,6 +270,8 @@ void report_current_position_projected();
 
 #if ENABLED(AUTO_REPORT_POSITION)
   #include "../libs/autoreport.h"
+  static float x_pos_curr, y_pos_curr;
+  static bool isHomed = false;
   struct PositionReport { static void report() {
     TERN(AUTO_REPORT_REAL_POSITION, report_real_position(), report_current_position_projected());
   } };

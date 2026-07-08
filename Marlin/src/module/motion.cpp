@@ -218,7 +218,7 @@ inline void report_more_positions() {
 inline void report_logical_position(const xyze_pos_t &rpos) {
   const xyze_pos_t lpos = rpos.asLogical();
   #if NUM_AXES
-    if(lpos.x == 260.00 && lpos.y == 0.00 && !isHomed){
+    if(lpos.x == X_MAX_POS && lpos.y == Y_MIN_POS && !isHomed){
       isHomed = true;
       x_pos_curr = lpos.x;
       y_pos_curr = lpos.y;
